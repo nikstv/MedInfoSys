@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/**").authenticated()
                 .and()
                 .formLogin().loginPage("/user/login").usernameParameter("username").passwordParameter("password")
-                .defaultSuccessUrl("/").failureForwardUrl("/user/login-err")
+                .defaultSuccessUrl("/user/my-profile").failureForwardUrl("/user/login-err")
                 .and()
                 .logout().logoutUrl("/user/logout").logoutSuccessUrl("/")
                 .invalidateHttpSession(true).deleteCookies("JSESSIONID");
