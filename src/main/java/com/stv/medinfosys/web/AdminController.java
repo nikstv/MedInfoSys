@@ -1,0 +1,150 @@
+package com.stv.medinfosys.web;
+
+import com.stv.medinfosys.components.CustomMapper;
+import com.stv.medinfosys.model.binding.UserEditBindingModel;
+import com.stv.medinfosys.model.binding.UserRegisterBindingModel;
+import com.stv.medinfosys.model.service.UserServiceModel;
+import com.stv.medinfosys.service.CloudinaryService;
+import com.stv.medinfosys.service.CountryService;
+import com.stv.medinfosys.service.UserRoleService;
+import com.stv.medinfosys.service.UserService;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Controller
+public class AdminController {
+    private final UserService userService;
+    private final ModelMapper modelMapper;
+    private final UserRoleService userRoleService;
+    private final CountryService countryService;
+    private final CloudinaryService cloudinaryService;
+    private final CustomMapper customMapper;
+
+    public AdminController(UserService userService,
+                           ModelMapper modelMapper,
+                           UserRoleService userRoleService,
+                           CountryService countryService,
+                           CloudinaryService cloudinaryService,
+                           CustomMapper customMapper) {
+
+        this.userService = userService;
+        this.modelMapper = modelMapper;
+        this.userRoleService = userRoleService;
+        this.countryService = countryService;
+        this.cloudinaryService = cloudinaryService;
+        this.customMapper = customMapper;
+    }
+
+    @GetMapping("/admin/users")
+    public String getUsersEditList(Model model) {
+        model.addAttribute("link", "/api/get-all-users");
+        return "all-users-admin-panel";
+    }
+
+    @PatchMapping("/admin/user/reset-login-details")
+    public String changeUserCredentials(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+        String newPassword = this.userService.generateNewUserPassword(id);
+        redirectAttributes
+                .addFlashAttribute("initialPassword", newPassword);
+        return "redirect:/user/" + id + "/details";
+    }
+
+    @GetMapping("/admin/user/register")
+    public String userRegister(Model model) {
+        model.addAttribute("allCountries", this.countryService.findAllCountries());
+        model.addAttribute("userRoles", this.userRoleService.findAllRoles());
+        model.addAttribute("postLink", "/admin/user/register");
+
+        return "user-register-form";
+    }
+
+    @ModelAttribute("registerBindingModel")
+    public UserRegisterBindingModel userRegisterBindingModel() {
+        return new UserRegisterBindingModel();
+    }
+
+    @PostMapping("/admin/user/register")
+    public String userRegisterConfirm(@Valid UserRegisterBindingModel registerBindingModel,
+                                      BindingResult bindingResult,
+                                      RedirectAttributes redirectAttributes) throws IOException {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("registerBindingModel", registerBindingModel);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerBindingModel", bindingResult);
+            return "redirect:/admin/user/register";
+        }
+
+        //TODO CHECK IF PERSONAL CITIZEN NUMBER IS ALREADY REGISTERED
+
+        UserServiceModel userServiceModel = this.customMapper.mapUserBaseBindingModelToUserServiceModel(registerBindingModel, registerBindingModel.getRoles());
+
+        UserServiceModel saved = this.userService.saveToDb(userServiceModel);
+
+        redirectAttributes.addFlashAttribute("initialUsername", saved.getUsername());
+        redirectAttributes.addFlashAttribute("initialPassword", saved.getInitialRawPassword());
+
+        return "redirect:/user/" + saved.getId() + "/details";
+    }
+
+    @GetMapping("/admin/user/{id}/edit")
+    public String editUserDetails(Model model, @PathVariable Long id) {
+        UserServiceModel userServiceModel = this.userService.findUserById(id);
+        List<Long> roleIds = userServiceModel.getRoles().stream()
+                .map(role -> role.getId()).collect(Collectors.toList());
+        UserEditBindingModel userEditBindingModel = this.modelMapper.map(userServiceModel, UserEditBindingModel.class);
+        userEditBindingModel.setRolesId(roleIds);
+
+        //TODO CHECK IF USER EXISTS IN DB. IF NOT, THROW AN ERROR.
+
+        model.addAttribute("userId", id);
+        model.addAttribute("editBindingModel", userEditBindingModel);
+        model.addAttribute("allCountries", this.countryService.findAllCountries());
+        model.addAttribute("allRoles", this.userRoleService.findAllRoles());
+        model.addAttribute("postLink", "/admin/user/" + id + "/edit");
+
+        return "user-edit-form";
+    }
+
+    @PatchMapping("/admin/user/{id}/edit")
+    public String editUserDetailsConfirm(@PathVariable Long id, @Valid UserEditBindingModel userEditBindingModel, BindingResult bindingResult, RedirectAttributes redirectAttributes) throws IOException {
+        if (bindingResult.hasErrors()) {
+            redirectAttributes
+                    .addFlashAttribute("editBindingModel", userEditBindingModel)
+                    .addFlashAttribute("org.springframework.validation.BindingResult.editBindingModel", bindingResult);
+
+            return "redirect:/admin/user/" + id + "/edit-err";
+        }
+
+        //TODO CHECK IF PERSONAL CITIZEN NUMBER IS ALREADY IN DB
+
+        UserServiceModel userServiceModel = this.customMapper.mapUserBaseBindingModelToUserServiceModel(userEditBindingModel, userEditBindingModel.getRolesId());
+
+        this.userService.patchUser(userServiceModel, id);
+        return "redirect:/user/" + id + "/details";
+    }
+
+    @GetMapping("/admin/user/{id}/edit-err")
+    public String editUserDetailsErr(Model model, @PathVariable Long id) {
+
+        model.addAttribute("userId", id);
+        model.addAttribute("allCountries", this.countryService.findAllCountries());
+        model.addAttribute("allRoles", this.userRoleService.findAllRoles());
+        model.addAttribute("postLink", "/admin/user/" + id + "/edit");
+
+        return "user-edit-form";
+    }
+
+    @PostMapping("/admin/user/{id}/invalidate-session")
+    public String expireSessionNow(@PathVariable Long id) {
+        this.userService.expireSessionNow(this.userService.findUserById(id).getUsername());
+        return "redirect:/admin/users";
+    }
+}
