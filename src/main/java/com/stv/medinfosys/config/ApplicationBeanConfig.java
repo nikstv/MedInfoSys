@@ -11,6 +11,13 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 
 @Configuration
 public class ApplicationBeanConfig {
+
+    private final CloudinaryConfig cloudinaryConfig;
+
+    public ApplicationBeanConfig(CloudinaryConfig cloudinaryConfig) {
+        this.cloudinaryConfig = cloudinaryConfig;
+    }
+
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
@@ -23,7 +30,7 @@ public class ApplicationBeanConfig {
 
     @Bean
     public Cloudinary cloudinary() {
-        return new Cloudinary("cloudinary://489494176469125:r1qFhfCSVz_LV3m3ewWQTsvvU4o@dybrlz38r");
+        return new Cloudinary(this.cloudinaryConfig.getApiLink());
     }
 
     @Bean
