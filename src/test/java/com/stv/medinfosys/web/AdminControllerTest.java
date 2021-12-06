@@ -1,5 +1,6 @@
 package com.stv.medinfosys.web;
 
+import com.stv.medinfosys.model.binding.UserEditBindingModel;
 import com.stv.medinfosys.model.entity.BaseEntity;
 import com.stv.medinfosys.model.entity.CountryEntity;
 import com.stv.medinfosys.model.entity.UserEntity;
@@ -15,11 +16,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -95,7 +97,16 @@ class AdminControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
-    public void testRegisterAnotherAccountByAdmin() throws Exception {
+    public void registerUserAccountByAdminPage() throws Exception {
+        mockMvc
+                .perform(get("/admin/user/register"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("allCountries", "userRoles", "postLink"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void testRegisterUserAccountByAdmin() throws Exception {
 
         long initialUserRepositoryCount = userRepository.count();
 
@@ -120,8 +131,34 @@ class AdminControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void testRegisterUserAccountByAdminWithIncorrectDataFails() throws Exception {
+
+        long initialUserRepositoryCount = userRepository.count();
+
+        mockMvc
+                .perform(post("/admin/user/register")
+                        .param("firstName", "f")
+                        .param("lastName", "lastName")
+                        .param("personalCitizenNumber", "personalCitimber")
+                        .param("identityDocNumber", "identidngdgbntyDber")
+                        .param("telNumber", "telNumber")
+                        .param("countryId", this.country.getId().toString())
+                        .param("city", "city")
+                        .param("street", "street")
+                        .param("number", "number")
+                        .param("roles", "1")
+                        .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("registerBindingModel"))
+                .andExpect(flash().attributeExists("org.springframework.validation.BindingResult.registerBindingModel"));
+        assertEquals(initialUserRepositoryCount, userRepository.count());
+    }
+
+    @Test
     @WithMockUser(username = "doctor", roles = {"DOCTOR"})
-    public void testRegisterAnotherAccountByNoAdminFails() throws Exception {
+    public void testRegisterUserAccountByNoAdminFails() throws Exception {
 
         long initialUserRepositoryCount = userRepository.count();
 
@@ -172,4 +209,71 @@ class AdminControllerTest {
         long[] roles = userEntityUpdated.getRoles().stream().map(BaseEntity::getId).mapToLong(Long::longValue).toArray();
         assertArrayEquals(roles, new long[]{1});
     }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void testUserPatchWithIncorrectData() throws Exception {
+        String editedFirstName = "e";
+        String editedLastName = "editedLastName";
+        UserEntity userEntity = this.userRepository.findByUsername("testUser").get();
+
+        mockMvc
+                .perform(patch("/admin/user/" + userEntity.getId() + "/edit")
+                        .param("firstName", editedFirstName)
+                        .param("lastName", editedLastName)
+                        .param("personalCitizenNumber", "personalCitimber")
+                        .param("identityDocNumber", "personal_test_id")
+                        .param("telNumber", "telNumber")
+                        .param("countryId", this.country.getId().toString())
+                        .param("city", "city")
+                        .param("street", "street")
+                        .param("number", "number")
+                        .param("rolesId", "1")
+                        .with(csrf())
+                ).andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/admin/user/"+userEntity.getId()+"/edit-err"))
+                .andExpect(flash().attributeExists("editBindingModel", "org.springframework.validation.BindingResult.editBindingModel"));
+
+        UserEntity userEntityUpdated = this.userRepository.findByUsername("testUser").get();
+        assertNotEquals(userEntityUpdated.getFirstName(), editedFirstName);
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void patchUserAccountByAdminPage() throws Exception {
+
+        UserEntity userEntity = this.userRepository.findByUsername("testUser").get();
+
+        mockMvc
+                .perform(get("/admin/user/" + userEntity.getId() + "/edit"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("userId", "editBindingModel", "allCountries", "allRoles", "postLink"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void patchUserAccountByAdminBindingErrorPage() throws Exception {
+
+        UserEntity userEntity = this.userRepository.findByUsername("testUser").get();
+
+        mockMvc
+                .perform(get("/admin/user/" + userEntity.getId() + "/edit-err").flashAttr("editBindingModel", new UserEditBindingModel()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("userId", "allCountries", "allRoles", "postLink"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void testChangeUserDetails() throws Exception {
+        UserEntity userEntity = this.userRepository.findByUsername("testUser").get();
+        mockMvc
+                .perform(patch("/admin/user/reset-login-details")
+                        .param("id", userEntity.getId().toString()).with(csrf()))
+                .andExpect(status().is3xxRedirection());
+        UserEntity afterChange = this.userRepository.findByUsername("testUser").get();
+        assertEquals(afterChange.getUsername(), userEntity.getUsername());
+        assertNotEquals(afterChange.getPassword(), userEntity.getPassword());
+    }
+
+
 }
