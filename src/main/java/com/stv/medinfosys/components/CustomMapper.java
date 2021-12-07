@@ -45,6 +45,8 @@ public class CustomMapper {
                 .collect(Collectors.toList());
 
         userServiceModel.setRoles(roleServiceModels);
+        userServiceModel.setAccountNonLocked(true);
+        userServiceModel.setEnabled(true);
 
         return userServiceModel;
     }

@@ -25,6 +25,8 @@ public class UserEntity extends BaseEntity {
     private String number;
     private String additionalInfo;
     private CloudinaryPictureEntity picture;
+    private Boolean isEnabled;
+    private Boolean isAccountNonLocked;
 
     public UserEntity() {
         this.roles=new ArrayList<>();
@@ -205,6 +207,26 @@ public class UserEntity extends BaseEntity {
 
     public UserEntity setPicture(CloudinaryPictureEntity picture) {
         this.picture = picture;
+        return this;
+    }
+
+    @Column(nullable = false)
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public UserEntity setEnabled(Boolean enabled) {
+        isEnabled = enabled;
+        return this;
+    }
+
+    @Column(nullable = false)
+    public Boolean getAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
+    public UserEntity setAccountNonLocked(Boolean accountNonLocked) {
+        isAccountNonLocked = accountNonLocked;
         return this;
     }
 }

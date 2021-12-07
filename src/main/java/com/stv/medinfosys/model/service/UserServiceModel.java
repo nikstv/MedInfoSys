@@ -26,7 +26,8 @@ public class UserServiceModel extends BaseServiceModel {
     private String number;
     private String additionalInfo;
     private CloudinaryPictureServiceModel picture;
-
+    private Boolean isEnabled;
+    private Boolean isAccountNonLocked;
     private String initialRawPassword;
 
     public UserServiceModel() {
@@ -201,6 +202,24 @@ public class UserServiceModel extends BaseServiceModel {
 
     public UserServiceModel setPicture(CloudinaryPictureServiceModel picture) {
         this.picture = picture;
+        return this;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public UserServiceModel setEnabled(Boolean enabled) {
+        isEnabled = enabled;
+        return this;
+    }
+
+    public Boolean getAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
+    public UserServiceModel setAccountNonLocked(Boolean accountNonLocked) {
+        isAccountNonLocked = accountNonLocked;
         return this;
     }
 }

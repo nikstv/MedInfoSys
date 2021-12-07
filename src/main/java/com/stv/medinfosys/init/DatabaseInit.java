@@ -98,7 +98,9 @@ public class DatabaseInit implements CommandLineRunner {
                 .setCountry(Bulgaria)
                 .setNumber("133")
                 .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.ADMIN)))
-                .setTelNumber("0284569698");
+                .setTelNumber("0284569698")
+                .setEnabled(true)
+                .setAccountNonLocked(true);
 
         this.userService.saveToDb(admin);
 
@@ -116,7 +118,9 @@ public class DatabaseInit implements CommandLineRunner {
                 .setCountry(Bulgaria)
                 .setNumber("254")
                 .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.DOCTOR)))
-                .setTelNumber("0326541452");
+                .setTelNumber("0326541452")
+                .setEnabled(true)
+                .setAccountNonLocked(true);
 
         this.userService.saveToDb(doctor);
     }

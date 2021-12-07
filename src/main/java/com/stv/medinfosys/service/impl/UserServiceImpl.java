@@ -219,10 +219,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean hasPatientRole(Long userId){
+    public boolean hasPatientRole(Long userId) {
         Optional<UserEntity> byIdOpt = this.userRepository.findById(userId);
-        if (byIdOpt.isEmpty()){
-            throw new ObjectNotFoundException("User with id "+userId+" was not found");
+        if (byIdOpt.isEmpty()) {
+            throw new ObjectNotFoundException("User with id " + userId + " was not found");
         }
 
         return byIdOpt.get().getRoles().stream()
@@ -232,7 +232,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserServiceModel> findAllPatients(){
+    public List<UserServiceModel> findAllPatients() {
         List<UserEntity> allPatients = this.userRepository.findAllPatients();
         Type type = new TypeToken<List<UserServiceModel>>() {
         }.getType();
@@ -241,8 +241,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ActiveUserCountViewModel getCountOfActiveUsers(){
+    public ActiveUserCountViewModel getCountOfActiveUsers() {
         int size = this.sessionRegistry.getAllPrincipals().size();
         return new ActiveUserCountViewModel(size);
+    }
+
+    @Override
+    public void disableAccount(Long userId) {
+        Optional<UserEntity> byId = this.userRepository.findById(userId);
+        if (byId.isEmpty()) {
+            throw new ObjectNotFoundException("User with id " + userId + " was not found");
+        }
+
+        UserEntity userEntity = byId.get();
+        userEntity.setEnabled(false);
+        this.userRepository.save(userEntity);
+    }
+
+    @Override
+    public void lockAccount(Long userId) {
+        Optional<UserEntity> byId = this.userRepository.findById(userId);
+        if (byId.isEmpty()) {
+            throw new ObjectNotFoundException("User with id " + userId + " was not found");
+        }
+
+        UserEntity userEntity = byId.get();
+        userEntity.setAccountNonLocked(false);
+        this.userRepository.save(userEntity);
     }
 }

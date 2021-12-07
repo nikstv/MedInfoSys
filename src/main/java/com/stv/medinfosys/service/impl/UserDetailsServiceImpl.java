@@ -30,6 +30,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRole().name()))
                         .collect(Collectors.toList());
 
-        return new User(byUsername.getUsername(), byUsername.getPassword(), authorities);
+        return new User(byUsername.getUsername(), byUsername.getPassword(), byUsername.getEnabled(), true, true, byUsername.getAccountNonLocked(), authorities);
     }
 }

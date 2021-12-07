@@ -33,4 +33,8 @@ public interface UserService {
     List<UserServiceModel> findAllPatients();
 
     ActiveUserCountViewModel getCountOfActiveUsers();
+
+    void disableAccount(Long userId);
+
+    void lockAccount(Long userId);
 }
