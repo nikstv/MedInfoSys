@@ -5,15 +5,12 @@ import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
 import com.stv.medinfosys.model.binding.PatientEditBindingModel;
 import com.stv.medinfosys.model.binding.PatientRegisterBindingModel;
 import com.stv.medinfosys.model.enums.UserRoleEnum;
-import com.stv.medinfosys.model.service.PatientServiceModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
-import com.stv.medinfosys.model.view.AdminPanelUserViewModel;
 import com.stv.medinfosys.service.CountryService;
 import com.stv.medinfosys.service.PatientService;
 import com.stv.medinfosys.service.UserRoleService;
 import com.stv.medinfosys.service.UserService;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,9 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class DoctorController {
@@ -34,7 +29,6 @@ public class DoctorController {
     private final UserRoleService userRoleService;
     private final ModelMapper modelMapper;
     private final CustomMapper customMapper;
-    private final PatientService patientService;
 
     public DoctorController(CountryService countryService,
                             UserService userService,
@@ -48,7 +42,6 @@ public class DoctorController {
         this.userRoleService = userRoleService;
         this.modelMapper = modelMapper;
         this.customMapper = customMapper;
-        this.patientService = patientService;
     }
 
     @GetMapping("/doctor/register-patient")

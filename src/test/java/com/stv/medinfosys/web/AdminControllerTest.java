@@ -16,9 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,8 +46,6 @@ class AdminControllerTest {
 
     @BeforeEach
     void init() {
-//        CountryEntity countryEntity = this.countryRepository.findCountryEntityByName("Bulgaria").get();
-
         this.country = this.countryRepository.save(new CountryEntity().setName("testName").setNativeName("testNativeName"));
 
         UserEntity userEntity = new UserEntity();
@@ -115,7 +111,7 @@ class AdminControllerTest {
                         .param("firstName", "firstName")
                         .param("lastName", "lastName")
                         .param("personalCitizenNumber", "personalCitimber")
-                        .param("identityDocNumber", "identidngdgbntyDber")
+                        .param("identityDocNumber", "testIdDocNumber")
                         .param("telNumber", "telNumber")
                         .param("countryId", this.country.getId().toString())
                         .param("city", "city")
@@ -141,7 +137,7 @@ class AdminControllerTest {
                         .param("firstName", "f")
                         .param("lastName", "lastName")
                         .param("personalCitizenNumber", "personalCitimber")
-                        .param("identityDocNumber", "identidngdgbntyDber")
+                        .param("identityDocNumber", "testIdDocNumber")
                         .param("telNumber", "telNumber")
                         .param("countryId", this.country.getId().toString())
                         .param("city", "city")
@@ -167,7 +163,7 @@ class AdminControllerTest {
                         .param("firstName", "firstName")
                         .param("lastName", "lastName")
                         .param("personalCitizenNumber", "personalCitimber")
-                        .param("identityDocNumber", "identidngdgbntyDber")
+                        .param("identityDocNumber", "testIdDocNumber")
                         .param("telNumber", "telNumber")
                         .param("country", this.country.getId().toString())
                         .param("city", "city")
@@ -192,7 +188,7 @@ class AdminControllerTest {
                         .param("firstName", editedFirstName)
                         .param("lastName", editedLastName)
                         .param("personalCitizenNumber", "personalCitimber")
-                        .param("identityDocNumber", "personal_test_id")
+                        .param("identityDocNumber", "testIdDocNumber")
                         .param("telNumber", "telNumber")
                         .param("countryId", this.country.getId().toString())
                         .param("city", "city")
@@ -222,7 +218,7 @@ class AdminControllerTest {
                         .param("firstName", editedFirstName)
                         .param("lastName", editedLastName)
                         .param("personalCitizenNumber", "personalCitimber")
-                        .param("identityDocNumber", "personal_test_id")
+                        .param("identityDocNumber", "testIdDocNumber")
                         .param("telNumber", "telNumber")
                         .param("countryId", this.country.getId().toString())
                         .param("city", "city")
@@ -274,6 +270,4 @@ class AdminControllerTest {
         assertEquals(afterChange.getUsername(), userEntity.getUsername());
         assertNotEquals(afterChange.getPassword(), userEntity.getPassword());
     }
-
-
 }
