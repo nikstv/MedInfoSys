@@ -1,5 +1,7 @@
 package com.stv.medinfosys.web;
 
+import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
+import com.stv.medinfosys.model.binding.PatientEditBindingModel;
 import com.stv.medinfosys.model.entity.CountryEntity;
 import com.stv.medinfosys.model.entity.UserEntity;
 import com.stv.medinfosys.model.entity.UserRoleEntity;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,7 +60,7 @@ class DoctorControllerTest {
 
         UserEntity doctor = new UserEntity();
         doctor
-                .setUsername("testUser")
+                .setUsername("testDoctor")
                 .setPassword("1234")
                 .setFirstName("Nikolay")
                 .setMiddleName("Nikolaev")
@@ -71,6 +74,23 @@ class DoctorControllerTest {
                 .setRoles(List.of(doctorRole))
                 .setTelNumber("0284569698");
         UserEntity doctorSaved = this.userRepository.save(doctor);
+
+        UserEntity patient = new UserEntity();
+        patient
+                .setUsername("testPatient")
+                .setPassword("1234")
+                .setFirstName("Ivan")
+                .setMiddleName("Ivanov")
+                .setLastName("Vanev")
+                .setCity("Plovdiv")
+                .setStreet("St. Peterburg blvd.")
+                .setPersonalCitizenNumber("5425256369")
+                .setIdentityDocNumber("456321489")
+                .setCountry(country)
+                .setNumber("133")
+                .setRoles(List.of(patientRole))
+                .setTelNumber("0284569698");
+        UserEntity patientSaved = this.userRepository.save(patient);
     }
 
     @AfterEach
@@ -101,7 +121,6 @@ class DoctorControllerTest {
     @Test
     @WithMockUser(username = "doctor", roles = {"DOCTOR"})
     public void testRegisterPatientByDoctor() throws Exception {
-
         long initialUserRepositoryCount = userRepository.count();
 
         MvcResult mvcResult = mockMvc
@@ -139,6 +158,52 @@ class DoctorControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void testRegisterPatientByDoctorWithInvalidDataFails() throws Exception {
+
+        mockMvc
+                .perform(post("/doctor/register-patient")
+                        .param("firstName", "fn")
+                        .param("lastName", "ln")
+                        .param("personalCitizenNumber", "personalCitimber")
+                        .param("identityDocNumber", "testIdDocNumber")
+                        .param("telNumber", "telNumber")
+                        .param("countryId", this.country.getId().toString())
+                        .param("city", "city")
+                        .param("street", "street")
+                        .param("number", "number")
+                        .param("roles", this.patientRole.getId().toString())
+                        .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("registerBindingModel"))
+                .andExpect(flash().attributeExists("org.springframework.validation.BindingResult.registerBindingModel"));
+    }
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void testRegisterAlreadyExistingPatientByDoctor() throws Exception {
+
+        UserEntity existingPatient = this.userRepository.findByUsername("testPatient").get();
+
+        mockMvc
+                .perform(post("/doctor/register-patient")
+                        .param("firstName", "firstName")
+                        .param("lastName", "lastName")
+                        .param("personalCitizenNumber", existingPatient.getPersonalCitizenNumber())
+                        .param("identityDocNumber", "testIdDocNumber")
+                        .param("telNumber", "telNumber")
+                        .param("countryId", this.country.getId().toString())
+                        .param("city", "city")
+                        .param("street", "street")
+                        .param("number", "number")
+                        .param("roles", this.patientRole.getId().toString())
+                        .with(csrf())
+                )
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof ObjectAlreadyExistsException));
+    }
+
+    @Test
     @WithMockUser(username = "doctor", roles = {"ADMIN", "PATIENT"})
     public void testRegisterPatientByNotDoctorFails() throws Exception {
         long initialUserRepositoryCount = userRepository.count();
@@ -146,7 +211,7 @@ class DoctorControllerTest {
                 .perform(post("/doctor/register-patient")
                         .param("firstName", "firstName")
                         .param("lastName", "lastName")
-                        .param("personalCitizenNumber", "personalCitimber")
+                        .param("personalCitizenNumber", "personalCitizen")
                         .param("identityDocNumber", "testIdDocNumber")
                         .param("telNumber", "telNumber")
                         .param("countryId", this.country.getId().toString())
@@ -159,5 +224,74 @@ class DoctorControllerTest {
                 .andExpect(status().is4xxClientError());
 
         assertEquals(initialUserRepositoryCount, userRepository.count());
+    }
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void testPatchPatientByDoctorPage() throws Exception {
+        UserEntity patient = this.userRepository.findByUsername("testPatient").get();
+        mockMvc
+                .perform(get("/doctor/edit-patient-details/" + patient.getId()))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("userId", patient.getId()))
+                .andExpect(model().attribute("postLink", "/doctor/edit-patient-details/" + patient.getId()))
+                .andExpect(model().attributeExists("editBindingModel", "allCountries", "allRoles"));
+    }
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void testPatchPatientByDoctor() throws Exception {
+        UserEntity patient = this.userRepository.findByUsername("testPatient").get();
+        String patchedFirstName = "patchedFirstName";
+        String patchedLastName = "patchedLastName";
+
+        mockMvc
+                .perform(patch("/doctor/edit-patient-details/" + patient.getId())
+                        .param("firstName", patchedFirstName)
+                        .param("lastName", patchedLastName)
+                        .param("personalCitizenNumber", "5636589654")
+                        .param("identityDocNumber", "testIdDocNumber")
+                        .param("telNumber", "telNumber")
+                        .param("countryId", this.country.getId().toString())
+                        .param("city", "city")
+                        .param("street", "street")
+                        .param("number", "number")
+                        .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection());
+
+        patient = this.userRepository.findByUsername("testPatient").get();
+        assertEquals(patient.getFirstName(), patchedFirstName);
+        assertEquals(patient.getLastName(), patchedLastName);
+        UserRoleEnum expectedPatientRole = patient.getRoles().stream()
+                .map(UserRoleEntity::getRole)
+                .filter(r -> r.equals(UserRoleEnum.PATIENT))
+                .findAny()
+                .orElse(null);
+        assertEquals(expectedPatientRole, UserRoleEnum.PATIENT);
+    }
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void testPatchPatientByDoctorWithInvalidDataFails() throws Exception {
+        UserEntity patient = this.userRepository.findByUsername("testPatient").get();
+        String patchedFirstName = "pfn";
+        String patchedLastName = "pln";
+
+        mockMvc
+                .perform(patch("/doctor/edit-patient-details/" + patient.getId())
+                        .param("firstName", patchedFirstName)
+                        .param("lastName", patchedLastName)
+                        .param("personalCitizenNumber", "5636589654")
+                        .param("identityDocNumber", "testIdDocNumber")
+                        .param("telNumber", "telNumber")
+                        .param("countryId", this.country.getId().toString())
+                        .param("city", "city")
+                        .param("street", "street")
+                        .param("number", "number")
+                        .with(csrf())
+                )
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attributeExists("editBindingModel", "org.springframework.validation.BindingResult.editBindingModel"));
     }
 }
