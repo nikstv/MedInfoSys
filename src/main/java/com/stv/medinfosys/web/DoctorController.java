@@ -134,6 +134,7 @@ public class DoctorController {
     @GetMapping("/doctor/get-all-patients")
     public String getAllPatients(Model model) {
         model.addAttribute("link", "/api/get-all-patients");
+        model.addAttribute("isAdmin", false);
         return "all-users-admin-panel";
     }
 }

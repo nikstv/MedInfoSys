@@ -31,12 +31,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             "<td>\n" +
             "<a class=\"btn btn-info\" href=\"/user/" + user.id + "/details\">View</a>\n" +
             "<a class=\"btn btn-info\" href=\"/admin/user/" + user.id + "/edit\">Edit</a>\n" +
-            "<form method=\"POST\" action=\"/admin/user/" + user.id + "/invalidate-session\" class=\"post-button-form\">\n" +
+            "<form id=\"invalidate\" method=\"POST\" action=\"/admin/user/" + user.id + "/invalidate-session\" class=\"post-button-form\">\n" +
             "<input type=\"hidden\" name=\"_csrf\" value=" + csrf["value"] + ">" +
             "<button class=\"btn btn-info\" type=\"submit\">Invalidate sessions</button>\n" +
             "</form>\n" +
             "</td>\n" +
             "</tr>"
         tableBody.appendChild(row);
+
+        let invalidate = document.querySelector("#invalidate");
+        let isAdmin = document.querySelector("#isAdmin");
+        console.log(isAdmin.value)
+        if (isAdmin.value ==="false"){
+            invalidate.remove();
+        }
     }
 });

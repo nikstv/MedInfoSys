@@ -47,6 +47,7 @@ public class AdminController {
     @GetMapping("/admin/users")
     public String getUsersEditList(Model model) {
         model.addAttribute("link", "/api/get-all-users");
+        model.addAttribute("isAdmin", true);
         return "all-users-admin-panel";
     }
 
