@@ -1,15 +1,15 @@
-package com.stv.medinfosys.model.service;
+package com.stv.medinfosys.model.view;
 
-public class UserAccessStatsServiceModel {
+public class UserAccessStatsViewModel {
     private String username;
     private String method;
     private String path;
     private Integer responseStatus;
 
-    public UserAccessStatsServiceModel() {
+    public UserAccessStatsViewModel() {
     }
 
-    public UserAccessStatsServiceModel(String username, String method, String path, Integer responseStatus) {
+    public UserAccessStatsViewModel(String username, String method, String path, Integer responseStatus) {
         this.username = username;
         this.method = method;
         this.path = path;
@@ -20,7 +20,7 @@ public class UserAccessStatsServiceModel {
         return username;
     }
 
-    public UserAccessStatsServiceModel setUsername(String username) {
+    public UserAccessStatsViewModel setUsername(String username) {
         this.username = username;
         return this;
     }
@@ -29,7 +29,7 @@ public class UserAccessStatsServiceModel {
         return path;
     }
 
-    public UserAccessStatsServiceModel setPath(String path) {
+    public UserAccessStatsViewModel setPath(String path) {
         this.path = path;
         return this;
     }
@@ -38,14 +38,14 @@ public class UserAccessStatsServiceModel {
         return method;
     }
 
-    public UserAccessStatsServiceModel setMethod(String method) {
+    public UserAccessStatsViewModel setMethod(String method) {
         this.method = method;
         return this;
     }
 
     @Override
     public String toString() {
-        return "UserAccessStatsServiceModel{" +
+        return "UserAccessStatsViewModel{" +
                 "username='" + username + '\'' +
                 ", method='" + method + '\'' +
                 ", path='" + path + '\'' +

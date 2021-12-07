@@ -1,6 +1,6 @@
 package com.stv.medinfosys.service.impl;
 
-import com.stv.medinfosys.model.service.UserAccessStatsServiceModel;
+import com.stv.medinfosys.model.view.UserAccessStatsViewModel;
 import com.stv.medinfosys.service.UserAccessStatsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class UserAccessStatsServiceImpl implements UserAccessStatsService {
         String requestURI = request.getRequestURI();
         int responseStatus = response.getStatus();
 
-        UserAccessStatsServiceModel userAccessStatsServiceModel = new UserAccessStatsServiceModel(username, method, requestURI, responseStatus);
-        logger.info(userAccessStatsServiceModel.toString());
+        UserAccessStatsViewModel userAccessStatsViewModel = new UserAccessStatsViewModel(username, method, requestURI, responseStatus);
+        logger.info(userAccessStatsViewModel.toString());
     }
 }

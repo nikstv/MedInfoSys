@@ -8,6 +8,7 @@ import com.stv.medinfosys.model.entity.UserRoleEntity;
 import com.stv.medinfosys.model.enums.UserRoleEnum;
 import com.stv.medinfosys.model.service.UserRoleServiceModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
+import com.stv.medinfosys.model.view.ActiveUserCountViewModel;
 import com.stv.medinfosys.repository.UserRepository;
 import com.stv.medinfosys.service.CloudinaryService;
 import com.stv.medinfosys.service.UserRoleService;
@@ -237,5 +238,11 @@ public class UserServiceImpl implements UserService {
         }.getType();
 
         return this.modelMapper.map(allPatients, type);
+    }
+
+    @Override
+    public ActiveUserCountViewModel getCountOfActiveUsers(){
+        int size = this.sessionRegistry.getAllPrincipals().size();
+        return new ActiveUserCountViewModel(size);
     }
 }

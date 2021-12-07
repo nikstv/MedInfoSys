@@ -57,7 +57,7 @@
 
 <footer class="footer mt-auto py-3 bg-dark text-center" th:fragment="body-footer">
     <div class="container">
-        <span>Place sticky footer content here.</span>
+        <span sec:authorize="hasRole('ADMIN')" th:text="|Logged users: ${countOfActiveUsers.activeUsersCount}|"></span>
     </div>
 </footer>
 

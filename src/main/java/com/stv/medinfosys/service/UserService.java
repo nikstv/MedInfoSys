@@ -1,6 +1,7 @@
 package com.stv.medinfosys.service;
 
 import com.stv.medinfosys.model.service.UserServiceModel;
+import com.stv.medinfosys.model.view.ActiveUserCountViewModel;
 import org.springframework.security.core.Authentication;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface UserService {
     boolean hasPatientRole(Long userId);
 
     List<UserServiceModel> findAllPatients();
+
+    ActiveUserCountViewModel getCountOfActiveUsers();
 }
