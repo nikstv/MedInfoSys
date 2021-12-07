@@ -87,7 +87,6 @@ public class DoctorController {
     @GetMapping("/doctor/edit-patient-details/{id}")
     @PreAuthorize("@userServiceImpl.hasPatientRole(#id)")
     public String editPatientDetails(@PathVariable Long id, Model model) {
-        //TODO CHECK IF USER IS A PATIENT
         UserServiceModel userById = this.userService.findUserById(id);
         PatientEditBindingModel patientEditBindingModel = this.modelMapper.map(userById, PatientEditBindingModel.class);
 

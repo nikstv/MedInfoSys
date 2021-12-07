@@ -179,14 +179,14 @@ class AdminControllerTest {
     @Test
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     public void testUserPatch() throws Exception {
-        String editedFirstName = "editedFirstName";
-        String editedLastName = "editedLastName";
+        String patchedFirstName = "patchedFirstName";
+        String patchedLastName = "patchedLastName";
         UserEntity userEntity = this.userRepository.findByUsername("testUser").get();
 
         mockMvc
                 .perform(patch("/admin/user/" + userEntity.getId() + "/edit")
-                        .param("firstName", editedFirstName)
-                        .param("lastName", editedLastName)
+                        .param("firstName", patchedFirstName)
+                        .param("lastName", patchedLastName)
                         .param("personalCitizenNumber", "personalCitimber")
                         .param("identityDocNumber", "testIdDocNumber")
                         .param("telNumber", "telNumber")
@@ -199,8 +199,8 @@ class AdminControllerTest {
                 ).andExpect(status().is3xxRedirection());
 
         UserEntity userEntityUpdated = this.userRepository.findByUsername("testUser").get();
-        assertEquals(userEntityUpdated.getFirstName(), editedFirstName);
-        assertEquals(userEntityUpdated.getLastName(), editedLastName);
+        assertEquals(userEntityUpdated.getFirstName(), patchedFirstName);
+        assertEquals(userEntityUpdated.getLastName(), patchedLastName);
 
         long[] roles = userEntityUpdated.getRoles().stream().map(BaseEntity::getId).mapToLong(Long::longValue).toArray();
         assertArrayEquals(roles, new long[]{1});
@@ -227,7 +227,7 @@ class AdminControllerTest {
                         .param("rolesId", "1")
                         .with(csrf())
                 ).andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/user/"+userEntity.getId()+"/edit-err"))
+                .andExpect(redirectedUrl("/admin/user/" + userEntity.getId() + "/edit-err"))
                 .andExpect(flash().attributeExists("editBindingModel", "org.springframework.validation.BindingResult.editBindingModel"));
 
         UserEntity userEntityUpdated = this.userRepository.findByUsername("testUser").get();
@@ -255,7 +255,9 @@ class AdminControllerTest {
         mockMvc
                 .perform(get("/admin/user/" + userEntity.getId() + "/edit-err").flashAttr("editBindingModel", new UserEditBindingModel()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("userId", "allCountries", "allRoles", "postLink"));
+                .andExpect(model().attribute("userId", userEntity.getId()))
+                .andExpect(model().attribute("postLink", "/admin/user/" + userEntity.getId() + "/edit"))
+                .andExpect(model().attributeExists("allCountries", "allRoles"));
     }
 
     @Test

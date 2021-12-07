@@ -38,12 +38,18 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public UserRoleServiceModel findRoleByEnum(UserRoleEnum userRoleEnum) {
-        return this.userRoleRepository.findAll()
-                .stream()
-                .filter(role -> role.getRole().equals(userRoleEnum))
-                .findAny()
-                .map(role -> this.modelMapper.map(role, UserRoleServiceModel.class))
-                .orElseThrow(() -> new ObjectNotFoundException("User role not found."));
+//        return this.userRoleRepository.findAll()
+//                .stream()
+//                .filter(role -> role.getRole().equals(userRoleEnum))
+//                .findAny()
+//                .map(role -> this.modelMapper.map(role, UserRoleServiceModel.class))
+//                .orElseThrow(() -> new ObjectNotFoundException("User role not found."));
+        Optional<UserRoleEntity> byRoleOpt = this.userRoleRepository.findByRole(userRoleEnum);
+        if (byRoleOpt.isEmpty()) {
+            throw new ObjectNotFoundException("User role" + userRoleEnum.name() + " not found.");
+        }
+
+        return this.modelMapper.map(byRoleOpt.get(), UserRoleServiceModel.class);
     }
 
     @Override
