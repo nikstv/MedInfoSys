@@ -9,7 +9,7 @@
 <!-- Responsive navbar-->
 <nav th:replace="fragments/fragments::navbar"></nav>
 <!-- Page content-->
-<div class="container">
+<div class="container" th:object="${userInfoViewModel}">
     <div th:replace="fragments/fragments::body-header"></div>
 
     <div th:if="${initialPassword}" class="card personal-card-large text-center" id="initialUserDetails">
@@ -36,13 +36,13 @@
             <div class="col-lg-8">
                 <div class="personal-id-info-card card">
                     <ul class="list-group">
-                        <li class="list-group-item" th:text="${fullName}">First, Second, Last Name</li>
-                        <li class="list-group-item" th:text="${personalCitizenNumber}">Personal Citizen Number</li>
-                        <li class="list-group-item" th:text="${idDocNumber}">ID Doc Number</li>
-                        <li class="list-group-item" th:text="${phoneNumber}">Phone number</li>
+                        <li class="list-group-item" th:text="*{fullName}">First, Second, Last Name</li>
+                        <li class="list-group-item" th:text="*{personalCitizenNumber}">Personal Citizen Number</li>
+                        <li class="list-group-item" th:text="*{idDocNumber}">ID Doc Number</li>
+                        <li class="list-group-item" th:text="*{phoneNumber}">Phone number</li>
                         <li class="list-group-item">
                             <h6>ADDRESS:</h6>
-                            <span th:text="${address}"></span>
+                            <span th:text="*{address}"></span>
                         </li>
                     </ul>
                 </div>
@@ -56,7 +56,7 @@
                 keep in mind, that the current login details will be automatically revoked!</p>
             <p class="card-text"></p>
             <form class="form-group" th:method="PATCH" th:action="@{/admin/user/reset-login-details}">
-                <input name="id" type="hidden" class="form-control" th:value="${userId}"/>
+                <input name="id" type="hidden" class="form-control" th:value="*{userId}"/>
                 <button class="btn btn-primary" type="submit">Request new credentials</button>
             </form>
         </div>

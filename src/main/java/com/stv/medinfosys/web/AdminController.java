@@ -55,8 +55,10 @@ public class AdminController {
     @PatchMapping("/admin/user/reset-login-details")
     public String changeUserCredentials(@RequestParam Long id, RedirectAttributes redirectAttributes) {
         String newPassword = this.userService.generateNewUserPassword(id);
+        String username = this.userService.findUserById(id).getUsername();
         redirectAttributes
-                .addFlashAttribute("initialPassword", newPassword);
+                .addFlashAttribute("initialPassword", newPassword)
+                .addFlashAttribute("initialUsername", username);
         return "redirect:/user/" + id + "/details";
     }
 

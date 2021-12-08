@@ -11,20 +11,12 @@
 <!-- Page content-->
 <div class="container">
     <div th:replace="fragments/fragments::body-header"></div>
-
-    <div th:if="${initialPassword}" class="card personal-card-large text-center" id="initialUserDetails">
-        <div class="card-body">
-            <h4 class="card-title">Auto generated user credentials</h4>
-            <h5 class="card-title">The generated user credentials will disapper after refreshing this page and can not
-                be restored!</h5>
-            <h5 class="card-title">In case of loss, a new user credentials have to be requested.</h5>
-            <p th:if="${initialUsername}" class="card-text" th:text="'Initial username: ' + ${initialUsername}">InitialUsername</p>
-            <p class="card-text" th:text="'Initial password: ' + ${initialPassword}">InitialPassword</p>
-        </div>
-    </div>
-
     <div class="personal-card-large">
         <div class="row">
+
+
+
+
             <div class="col-lg-6">
                 <div class="card personal-id-info-card">
                     <ul class="list-group">
@@ -39,6 +31,10 @@
                     </ul>
                 </div>
             </div>
+
+
+
+
             <div class="col-lg-6">
                 <div class="card personal-id-info-card">
                     <ul class="list-group">
@@ -53,18 +49,10 @@
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="card personal-card-large" sec:authorize="hasRole('ADMIN')">
-        <div class="card-body">
-            <h5 class="card-title">Request new login details</h5>
-            <p class="card-text">To request new login credentials for that user, please click the button below. Please
-                keep in mind, that the current login details will be automatically revoked!</p>
-            <p class="card-text"></p>
-            <form class="form-group" th:method="PATCH" th:action="@{/admin/user/reset-login-details}">
-                <input name="id" type="hidden" class="form-control" th:value="${userId}"/>
-                <button class="btn btn-primary" type="submit">Request new credentials</button>
-            </form>
+
+
+
+
         </div>
     </div>
     <div class="card personal-card-large">
@@ -72,39 +60,6 @@
             <h5 class="card-title">Card title</h5>
             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
                 content.</p>
-            <div class="table-responsive">
-                <table class="table table-dark">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
     </div>
 </div>

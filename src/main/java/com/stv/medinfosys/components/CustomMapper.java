@@ -5,12 +5,12 @@ import com.stv.medinfosys.model.service.CloudinaryPictureServiceModel;
 import com.stv.medinfosys.model.service.CountryServiceModel;
 import com.stv.medinfosys.model.service.UserRoleServiceModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
+import com.stv.medinfosys.model.view.UserInfoViewModel;
 import com.stv.medinfosys.service.CloudinaryService;
 import com.stv.medinfosys.service.CountryService;
 import com.stv.medinfosys.service.UserRoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,18 +52,11 @@ public class CustomMapper {
         return userServiceModel;
     }
 
-    public void mapUserServiceModelToViewModel(Model model, UserServiceModel userByIdServiceModel) {
-        if (!model.containsAttribute("initialPassword") && !model.containsAttribute("initialUsername")) {
-            model.addAttribute("initialPassword", null);
-            model.addAttribute("initialUsername", null);
-        }
-
-        StringBuilder fullName = new StringBuilder()
-                .append("Full name: ")
-                .append(userByIdServiceModel.getFirstName()).append(" ")
-                .append(userByIdServiceModel.getMiddleName()).append(" ")
-                .append(userByIdServiceModel.getLastName());
-        model.addAttribute("fullName", fullName);
+    public UserInfoViewModel mapUserServiceModelToViewModel(UserServiceModel userByIdServiceModel) {
+        String fullName = "Full name: " +
+                userByIdServiceModel.getFirstName() + " " +
+                userByIdServiceModel.getMiddleName() + " " +
+                userByIdServiceModel.getLastName();
 
         String address = "Country: " + userByIdServiceModel.getCountry().getName() +
                 "; State: " + userByIdServiceModel.getState() +
@@ -73,25 +66,27 @@ public class CustomMapper {
                 "; Street: " + userByIdServiceModel.getStreet() +
                 "; Number: " + userByIdServiceModel.getNumber() +
                 "; Additional info: " + userByIdServiceModel.getAdditionalInfo();
-        model.addAttribute("address", address);
 
-        StringBuilder personalCitizenNumber = new StringBuilder()
-                .append("Personal citizen number: ")
-                .append(userByIdServiceModel.getPersonalCitizenNumber());
-        model.addAttribute("personalCitizenNumber", personalCitizenNumber);
+        String personalCitizenNumber = "Personal citizen number: " +
+                userByIdServiceModel.getPersonalCitizenNumber();
 
-        StringBuilder phoneNumber = new StringBuilder()
-                .append("Phone number: ").append(userByIdServiceModel.getTelNumber());
-        model.addAttribute("phoneNumber", phoneNumber);
+        String phoneNumber = "Phone number: " + userByIdServiceModel.getTelNumber();
 
-        StringBuilder idDocNumber = new StringBuilder()
-                .append("ID document number: ").append(userByIdServiceModel.getIdentityDocNumber());
-        model.addAttribute("idDocNumber", idDocNumber);
-        model.addAttribute("userId", userByIdServiceModel.getId());
+        String idDocNumber = "ID document number: " + userByIdServiceModel.getIdentityDocNumber();
+
+        UserInfoViewModel userInfoViewModel = new UserInfoViewModel()
+                .setFullName(fullName)
+                .setAddress(address)
+                .setPersonalCitizenNumber(personalCitizenNumber)
+                .setPhoneNumber(phoneNumber)
+                .setIdDocNumber(idDocNumber)
+                .setUserId(userByIdServiceModel.getId().toString());
 
         if (userByIdServiceModel.getPicture() != null) {
-            model.addAttribute("profilePicture", userByIdServiceModel.getPicture().getUrl());
+            userInfoViewModel.setProfilePicture(userByIdServiceModel.getPicture().getUrl());
         }
+
+        return userInfoViewModel;
     }
 
 }

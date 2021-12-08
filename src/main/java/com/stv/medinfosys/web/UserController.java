@@ -3,6 +3,7 @@ package com.stv.medinfosys.web;
 import com.stv.medinfosys.components.CustomMapper;
 import com.stv.medinfosys.model.binding.UserLoginBindingModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
+import com.stv.medinfosys.model.view.UserInfoViewModel;
 import com.stv.medinfosys.service.CloudinaryService;
 import com.stv.medinfosys.service.CountryService;
 import com.stv.medinfosys.service.UserRoleService;
@@ -67,8 +68,14 @@ public class UserController {
     @GetMapping("/user/{id}/details")
     @PreAuthorize("@userServiceImpl.canViewUserDetails(#id)")
     public String viewUserDetails(@PathVariable Long id, Model model) {
+        if (!model.containsAttribute("initialPassword") && !model.containsAttribute("initialUsername")) {
+            model.addAttribute("initialPassword", null);
+            model.addAttribute("initialUsername", null);
+        }
+
         UserServiceModel userByIdServiceModel = this.userService.findUserById(id);
-        this.customMapper.mapUserServiceModelToViewModel(model, userByIdServiceModel);
+        UserInfoViewModel userInfoViewModel = this.customMapper.mapUserServiceModelToViewModel(userByIdServiceModel);
+        model.addAttribute("userInfoViewModel", userInfoViewModel);
 
         //TODO SHOW ROLES
         //TODO EDIT ROLES
