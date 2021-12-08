@@ -5,11 +5,9 @@ import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
 import com.stv.medinfosys.model.binding.PatientEditBindingModel;
 import com.stv.medinfosys.model.binding.PatientRegisterBindingModel;
 import com.stv.medinfosys.model.enums.UserRoleEnum;
-import com.stv.medinfosys.model.service.UserServiceModel;
-import com.stv.medinfosys.service.CountryService;
-import com.stv.medinfosys.service.PatientService;
-import com.stv.medinfosys.service.UserRoleService;
-import com.stv.medinfosys.service.UserService;
+import com.stv.medinfosys.model.service.*;
+import com.stv.medinfosys.model.view.UserInfoViewModel;
+import com.stv.medinfosys.service.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -21,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class DoctorController {
@@ -29,19 +28,21 @@ public class DoctorController {
     private final UserRoleService userRoleService;
     private final ModelMapper modelMapper;
     private final CustomMapper customMapper;
+    private final PhysicalExaminationService physicalExaminationService;
 
     public DoctorController(CountryService countryService,
                             UserService userService,
                             UserRoleService userRoleService,
                             ModelMapper modelMapper,
                             CustomMapper customMapper,
-                            PatientService patientService) {
+                            PhysicalExaminationService physicalExaminationService) {
 
         this.countryService = countryService;
         this.userService = userService;
         this.userRoleService = userRoleService;
         this.modelMapper = modelMapper;
         this.customMapper = customMapper;
+        this.physicalExaminationService = physicalExaminationService;
     }
 
     @GetMapping("/doctor/register-patient")
@@ -141,7 +142,21 @@ public class DoctorController {
     @GetMapping("/doctor/physical-examination/info/{id}")
     public String physicalExamination(@PathVariable("id") Long physicalExaminationID, Model model) {
 
+        PhysicalExaminationServiceModel physicalExamination = this.physicalExaminationService.findPhysicalExaminationById(physicalExaminationID);
+        DoctorServiceModel doctor = physicalExamination.getDoctor();
+        PatientServiceModel patient = physicalExamination.getPatient();
 
+
+        UserInfoViewModel patientViewModel = this.customMapper.mapUserServiceModelToViewModel(patient.getPatientProfile());
+        UserInfoViewModel doctorViewModel = this.customMapper.mapUserServiceModelToViewModel(doctor.getDoctorProfile());
+        String doctorMedicalSpecialties = doctor.getSpecialties().stream()
+                .map(MedicalSpecialtyServiceModel::getSpecialtyName)
+                .collect(Collectors.joining(", "));
+
+        model
+                .addAttribute("patient", patientViewModel)
+                .addAttribute("doctor", doctorViewModel)
+                .addAttribute("medicalSpecialties", doctorMedicalSpecialties);
 
         return "physical-examination";
     }

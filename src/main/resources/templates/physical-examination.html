@@ -15,42 +15,44 @@
         <div class="row">
 
 
-
-
             <div class="col-lg-6">
                 <div class="card personal-id-info-card">
+                    <h2 class="text-center">Patient personal information:</h2>
                     <ul class="list-group">
-                        <li class="list-group-item" th:text="${fullName}">First, Second, Last Name</li>
-                        <li class="list-group-item" th:text="${personalCitizenNumber}">Personal Citizen Number</li>
-                        <li class="list-group-item" th:text="${idDocNumber}">ID Doc Number</li>
-                        <li class="list-group-item" th:text="${phoneNumber}">Phone number</li>
+                        <li class="list-group-item" th:text="${patient.fullName}">First, Second, Last Name</li>
+                        <li class="list-group-item" th:text="${patient.personalCitizenNumber}">Personal Citizen Number
+                        </li>
+                        <li class="list-group-item" th:text="${patient.idDocNumber}">ID Doc Number</li>
+                        <li class="list-group-item" th:text="${patient.phoneNumber}">Phone number</li>
                         <li class="list-group-item">
                             <h6>ADDRESS:</h6>
-                            <span th:text="${address}"></span>
+                            <span th:text="${patient.address}"></span>
                         </li>
                     </ul>
                 </div>
             </div>
 
 
-
-
             <div class="col-lg-6">
                 <div class="card personal-id-info-card">
+                    <h2 class="text-center">Doctor personal information:</h2>
                     <ul class="list-group">
-                        <li class="list-group-item" th:text="${fullName}">First, Second, Last Name</li>
-                        <li class="list-group-item" th:text="${personalCitizenNumber}">Personal Citizen Number</li>
-                        <li class="list-group-item" th:text="${idDocNumber}">ID Doc Number</li>
-                        <li class="list-group-item" th:text="${phoneNumber}">Phone number</li>
+                        <li class="list-group-item" th:text="${doctor.fullName}">First, Second, Last Name</li>
+                        <li class="list-group-item" th:text="${doctor.personalCitizenNumber}">Personal Citizen Number
+                        </li>
+                        <li class="list-group-item" th:text="${doctor.idDocNumber}">ID Doc Number</li>
+                        <li class="list-group-item" th:text="${doctor.phoneNumber}">Phone number</li>
                         <li class="list-group-item">
                             <h6>ADDRESS:</h6>
-                            <span th:text="${address}"></span>
+                            <span th:text="${doctor.address}"></span>
+                        </li>
+                        <li class="list-group-item">
+                            <h6>Medical specialties:</h6>
+                            <span th:text="${medicalSpecialties}"></span>
                         </li>
                     </ul>
                 </div>
             </div>
-
-
 
 
         </div>

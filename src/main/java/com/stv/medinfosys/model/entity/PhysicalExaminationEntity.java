@@ -4,16 +4,16 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "physical_examinations")
-public class PhysicalExamination extends BaseEntity{
+public class PhysicalExaminationEntity extends BaseEntity{
     private DoctorEntity doctor;
     private PatientEntity patient;
-    private String caseHistory;
-    private String examinationType; //prophylaxis, primaryExamination, secondaryExamination
-    private String laboratoryTests;
-    private String therapy;
-    private String healthCondition;
+//    private String caseHistory;
+//    private String examinationType; //prophylaxis, primaryExamination, secondaryExamination
+//    private String laboratoryTests;
+//    private String therapy;
+//    private String healthCondition;
 
-    public PhysicalExamination() {
+    public PhysicalExaminationEntity() {
     }
 
     @ManyToOne
@@ -21,7 +21,7 @@ public class PhysicalExamination extends BaseEntity{
         return doctor;
     }
 
-    public PhysicalExamination setDoctor(DoctorEntity doctor) {
+    public PhysicalExaminationEntity setDoctor(DoctorEntity doctor) {
         this.doctor = doctor;
         return this;
     }
@@ -31,7 +31,7 @@ public class PhysicalExamination extends BaseEntity{
         return patient;
     }
 
-    public PhysicalExamination setPatient(PatientEntity patient) {
+    public PhysicalExaminationEntity setPatient(PatientEntity patient) {
         this.patient = patient;
         return this;
     }
