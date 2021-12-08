@@ -4,6 +4,7 @@ import com.stv.medinfosys.model.view.UserAccessStatsViewModel;
 import com.stv.medinfosys.service.UserAccessStatsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,12 @@ public class UserAccessStatsServiceImpl implements UserAccessStatsService {
 
     @Override
     public void onRequest(HttpServletRequest request, HttpServletResponse response) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication==null){
+            return;
+        }
+
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         String username = null;
