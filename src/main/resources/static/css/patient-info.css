@@ -1,10 +1,10 @@
-#personal-id-info-card {
+.personal-id-info-card {
     background: none;
     border: none;
     margin: 15px;
 }
 
-#personal-id-info-card .list-group-item {
+.personal-id-info-card .list-group-item {
     background: rgb(33,37,41);
     margin: 5px;
     border-width: medium;
@@ -13,13 +13,13 @@
     border-radius: 10px;
 }
 
-#personal-id-info-photo {
+.personal-id-info-photo {
     background: none;
     border: none;
     margin: 5px;
 }
 
-#personal-photo {
+.personal-photo {
     max-height: 40vh;
 }
 

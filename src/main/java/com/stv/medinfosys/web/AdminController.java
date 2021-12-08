@@ -1,6 +1,7 @@
 package com.stv.medinfosys.web;
 
 import com.stv.medinfosys.components.CustomMapper;
+import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
 import com.stv.medinfosys.model.binding.UserEditBindingModel;
 import com.stv.medinfosys.model.binding.UserRegisterBindingModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
@@ -83,7 +84,10 @@ public class AdminController {
             return "redirect:/admin/user/register";
         }
 
-        //TODO CHECK IF PERSONAL CITIZEN NUMBER IS ALREADY REGISTERED
+        UserServiceModel userByPersonalCitizenNumber = this.userService.findUserByPersonalCitizenNumber(registerBindingModel.getPersonalCitizenNumber());
+        if (userByPersonalCitizenNumber != null) {
+            throw new ObjectAlreadyExistsException("User with personal citizen number " + userByPersonalCitizenNumber.getPersonalCitizenNumber() + " already exists.");
+        }
 
         UserServiceModel userServiceModel = this.customMapper.mapUserBaseBindingModelToUserServiceModel(registerBindingModel, registerBindingModel.getRoles());
 
@@ -146,6 +150,18 @@ public class AdminController {
     @PostMapping("/admin/user/{id}/invalidate-session")
     public String expireSessionNow(@PathVariable Long id) {
         this.userService.expireSessionNow(this.userService.findUserById(id).getUsername());
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/admin/user/{id}/delete-account")
+    public String markAccountForDeletion(@PathVariable Long id) {
+        this.userService.markForDelete(id);
+        return "redirect:/admin/users";
+    }
+
+    @PostMapping("/admin/user/{id}/lock-account-toogle")
+    public String lockAccount(@PathVariable Long id) {
+        this.userService.lockAccountToogle(id);
         return "redirect:/admin/users";
     }
 }

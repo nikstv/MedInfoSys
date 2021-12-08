@@ -9,6 +9,8 @@ public class AdminPanelUserViewModel {
     private String lastName;
     private String personalCitizenNumber;
     private List<UserRoleViewModel> roles;
+    private Boolean isEnabled;
+    private Boolean isAccountNonLocked;
 
     public AdminPanelUserViewModel() {
     }
@@ -64,6 +66,24 @@ public class AdminPanelUserViewModel {
 
     public AdminPanelUserViewModel setPersonalCitizenNumber(String personalCitizenNumber) {
         this.personalCitizenNumber = personalCitizenNumber;
+        return this;
+    }
+
+    public Boolean getEnabled() {
+        return isEnabled;
+    }
+
+    public AdminPanelUserViewModel setEnabled(Boolean enabled) {
+        isEnabled = enabled;
+        return this;
+    }
+
+    public Boolean getAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
+    public AdminPanelUserViewModel setAccountNonLocked(Boolean accountNonLocked) {
+        isAccountNonLocked = accountNonLocked;
         return this;
     }
 }

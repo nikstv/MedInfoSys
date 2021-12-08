@@ -20,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -136,5 +137,12 @@ public class DoctorController {
         model.addAttribute("link", "/api/get-all-patients");
         model.addAttribute("isAdmin", false);
         return "all-users-admin-panel";
+    }
+
+    @GetMapping("/doctor/physical-examination/{id}")
+    public String physicalExamination(@PathVariable("id") Long physicalExaminationID, Model model){
+
+
+        return "physical-examination";
     }
 }

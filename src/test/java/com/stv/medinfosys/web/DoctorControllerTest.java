@@ -1,7 +1,6 @@
 package com.stv.medinfosys.web;
 
 import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
-import com.stv.medinfosys.model.binding.PatientEditBindingModel;
 import com.stv.medinfosys.model.entity.CountryEntity;
 import com.stv.medinfosys.model.entity.UserEntity;
 import com.stv.medinfosys.model.entity.UserRoleEntity;
@@ -13,16 +12,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -72,7 +70,9 @@ class DoctorControllerTest {
                 .setCountry(country)
                 .setNumber("133")
                 .setRoles(List.of(doctorRole))
-                .setTelNumber("0284569698");
+                .setTelNumber("0284569698")
+                .setEnabled(true)
+                .setAccountNonLocked(true);
         UserEntity doctorSaved = this.userRepository.save(doctor);
 
         UserEntity patient = new UserEntity();
@@ -89,7 +89,9 @@ class DoctorControllerTest {
                 .setCountry(country)
                 .setNumber("133")
                 .setRoles(List.of(patientRole))
-                .setTelNumber("0284569698");
+                .setTelNumber("0284569698")
+                .setEnabled(true)
+                .setAccountNonLocked(true);
         UserEntity patientSaved = this.userRepository.save(patient);
     }
 

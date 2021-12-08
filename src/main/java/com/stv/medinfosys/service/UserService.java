@@ -34,7 +34,7 @@ public interface UserService {
 
     ActiveUserCountViewModel getCountOfActiveUsers();
 
-    void disableAccount(Long userId);
+    void markForDelete(Long userId);
 
-    void lockAccount(Long userId);
+    void lockAccountToogle(Long userId);
 }

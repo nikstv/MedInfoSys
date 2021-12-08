@@ -62,7 +62,9 @@ class AdminControllerTest {
                 .setCountry(country)
                 .setNumber("133")
                 .setRoles(List.of())
-                .setTelNumber("0284569698");
+                .setTelNumber("0284569698")
+                .setEnabled(true)
+                .setAccountNonLocked(true);
         UserEntity save = this.userRepository.save(userEntity);
     }
 

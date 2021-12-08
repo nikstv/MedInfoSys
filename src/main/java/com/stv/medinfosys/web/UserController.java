@@ -1,5 +1,6 @@
 package com.stv.medinfosys.web;
 
+import com.stv.medinfosys.components.CustomMapper;
 import com.stv.medinfosys.model.binding.UserLoginBindingModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
 import com.stv.medinfosys.service.CloudinaryService;
@@ -26,18 +27,20 @@ public class UserController {
     private final CountryService countryService;
     private final UserRoleService userRoleService;
     private final CloudinaryService cloudinaryService;
+    private final CustomMapper customMapper;
 
     public UserController(ModelMapper modelMapper,
                           UserService userService,
                           CountryService countryService,
                           UserRoleService userRoleService,
-                          CloudinaryService cloudinaryService) {
+                          CloudinaryService cloudinaryService, CustomMapper customMapper) {
 
         this.modelMapper = modelMapper;
         this.userService = userService;
         this.countryService = countryService;
         this.userRoleService = userRoleService;
         this.cloudinaryService = cloudinaryService;
+        this.customMapper = customMapper;
     }
 
     @GetMapping("/user/login")
@@ -65,7 +68,7 @@ public class UserController {
     @PreAuthorize("@userServiceImpl.canViewUserDetails(#id)")
     public String viewUserDetails(@PathVariable Long id, Model model) {
         UserServiceModel userByIdServiceModel = this.userService.findUserById(id);
-        generateUserDetailsView(model, userByIdServiceModel);
+        this.customMapper.mapUserServiceModelToViewModel(model, userByIdServiceModel);
 
         //TODO SHOW ROLES
         //TODO EDIT ROLES
@@ -85,45 +88,4 @@ public class UserController {
         return "session-expired";
     }
 
-    private void generateUserDetailsView(Model model, UserServiceModel userByIdServiceModel) {
-        if (!model.containsAttribute("initialPassword") && !model.containsAttribute("initialUsername")) {
-            model.addAttribute("initialPassword", null);
-            model.addAttribute("initialUsername", null);
-        }
-
-        StringBuilder fullName = new StringBuilder()
-                .append("Full name: ")
-                .append(userByIdServiceModel.getFirstName()).append(" ")
-                .append(userByIdServiceModel.getMiddleName()).append(" ")
-                .append(userByIdServiceModel.getLastName());
-        model.addAttribute("fullName", fullName);
-
-        String address = "Country: " + userByIdServiceModel.getCountry().getName() +
-                "; State: " + userByIdServiceModel.getState() +
-                "; Municipality: " + userByIdServiceModel.getMunicipality() +
-                "; City: " + userByIdServiceModel.getCity() +
-                "; District: " + userByIdServiceModel.getDistrict() +
-                "; Street: " + userByIdServiceModel.getStreet() +
-                "; Number: " + userByIdServiceModel.getNumber() +
-                "; Additional info: " + userByIdServiceModel.getAdditionalInfo();
-        model.addAttribute("address", address);
-
-        StringBuilder personalCitizenNumber = new StringBuilder()
-                .append("Personal citizen number: ")
-                .append(userByIdServiceModel.getPersonalCitizenNumber());
-        model.addAttribute("personalCitizenNumber", personalCitizenNumber);
-
-        StringBuilder phoneNumber = new StringBuilder()
-                .append("Phone number: ").append(userByIdServiceModel.getTelNumber());
-        model.addAttribute("phoneNumber", phoneNumber);
-
-        StringBuilder idDocNumber = new StringBuilder()
-                .append("ID document number: ").append(userByIdServiceModel.getIdentityDocNumber());
-        model.addAttribute("idDocNumber", idDocNumber);
-        model.addAttribute("userId", userByIdServiceModel.getId());
-
-        if (userByIdServiceModel.getPicture() != null) {
-            model.addAttribute("profilePicture", userByIdServiceModel.getPicture().getUrl());
-        }
-    }
 }

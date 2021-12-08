@@ -25,16 +25,22 @@
 
     <div class="personal-card-large">
         <div class="row">
-            <div class="col-lg-4">
-                <div class="card personal-id-info-photo">
-                    <div class="card-body text-center">
-                        <img th:src="*{profilePicture} ? *{profilePicture} : @{/img/ProfilePhoto.jpg}"
-                              alt="Profile photo" class="img-fluid mx-auto personal-photo">
-                    </div>
+            <div class="col-lg-6">
+                <div class="card personal-id-info-card">
+                    <ul class="list-group">
+                        <li class="list-group-item" th:text="${fullName}">First, Second, Last Name</li>
+                        <li class="list-group-item" th:text="${personalCitizenNumber}">Personal Citizen Number</li>
+                        <li class="list-group-item" th:text="${idDocNumber}">ID Doc Number</li>
+                        <li class="list-group-item" th:text="${phoneNumber}">Phone number</li>
+                        <li class="list-group-item">
+                            <h6>ADDRESS:</h6>
+                            <span th:text="${address}"></span>
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="col-lg-8">
-                <div class="personal-id-info-card card">
+            <div class="col-lg-6">
+                <div class="card personal-id-info-card">
                     <ul class="list-group">
                         <li class="list-group-item" th:text="${fullName}">First, Second, Last Name</li>
                         <li class="list-group-item" th:text="${personalCitizenNumber}">Personal Citizen Number</li>

@@ -10,6 +10,7 @@ import com.stv.medinfosys.service.CountryService;
 import com.stv.medinfosys.service.UserRoleService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 
 import java.io.IOException;
 import java.util.List;
@@ -50,4 +51,47 @@ public class CustomMapper {
 
         return userServiceModel;
     }
+
+    public void mapUserServiceModelToViewModel(Model model, UserServiceModel userByIdServiceModel) {
+        if (!model.containsAttribute("initialPassword") && !model.containsAttribute("initialUsername")) {
+            model.addAttribute("initialPassword", null);
+            model.addAttribute("initialUsername", null);
+        }
+
+        StringBuilder fullName = new StringBuilder()
+                .append("Full name: ")
+                .append(userByIdServiceModel.getFirstName()).append(" ")
+                .append(userByIdServiceModel.getMiddleName()).append(" ")
+                .append(userByIdServiceModel.getLastName());
+        model.addAttribute("fullName", fullName);
+
+        String address = "Country: " + userByIdServiceModel.getCountry().getName() +
+                "; State: " + userByIdServiceModel.getState() +
+                "; Municipality: " + userByIdServiceModel.getMunicipality() +
+                "; City: " + userByIdServiceModel.getCity() +
+                "; District: " + userByIdServiceModel.getDistrict() +
+                "; Street: " + userByIdServiceModel.getStreet() +
+                "; Number: " + userByIdServiceModel.getNumber() +
+                "; Additional info: " + userByIdServiceModel.getAdditionalInfo();
+        model.addAttribute("address", address);
+
+        StringBuilder personalCitizenNumber = new StringBuilder()
+                .append("Personal citizen number: ")
+                .append(userByIdServiceModel.getPersonalCitizenNumber());
+        model.addAttribute("personalCitizenNumber", personalCitizenNumber);
+
+        StringBuilder phoneNumber = new StringBuilder()
+                .append("Phone number: ").append(userByIdServiceModel.getTelNumber());
+        model.addAttribute("phoneNumber", phoneNumber);
+
+        StringBuilder idDocNumber = new StringBuilder()
+                .append("ID document number: ").append(userByIdServiceModel.getIdentityDocNumber());
+        model.addAttribute("idDocNumber", idDocNumber);
+        model.addAttribute("userId", userByIdServiceModel.getId());
+
+        if (userByIdServiceModel.getPicture() != null) {
+            model.addAttribute("profilePicture", userByIdServiceModel.getPicture().getUrl());
+        }
+    }
+
 }

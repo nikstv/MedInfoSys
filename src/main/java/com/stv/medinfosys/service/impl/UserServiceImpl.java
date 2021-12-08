@@ -247,7 +247,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void disableAccount(Long userId) {
+    public void markForDelete(Long userId) {
         Optional<UserEntity> byId = this.userRepository.findById(userId);
         if (byId.isEmpty()) {
             throw new ObjectNotFoundException("User with id " + userId + " was not found");
@@ -256,17 +256,25 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = byId.get();
         userEntity.setEnabled(false);
         this.userRepository.save(userEntity);
+        this.expireSessionNow(userEntity.getUsername());
     }
 
     @Override
-    public void lockAccount(Long userId) {
+    public void lockAccountToogle(Long userId) {
         Optional<UserEntity> byId = this.userRepository.findById(userId);
         if (byId.isEmpty()) {
             throw new ObjectNotFoundException("User with id " + userId + " was not found");
         }
 
         UserEntity userEntity = byId.get();
-        userEntity.setAccountNonLocked(false);
+
+        if (userEntity.getAccountNonLocked()==true){
+            userEntity.setAccountNonLocked(false);
+        } else if (userEntity.getAccountNonLocked()==false){
+            userEntity.setAccountNonLocked(true);
+        }
+
         this.userRepository.save(userEntity);
+        this.expireSessionNow(userEntity.getUsername());
     }
 }

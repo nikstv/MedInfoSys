@@ -7,9 +7,11 @@ import javax.persistence.*;
 public class PhysicalExamination extends BaseEntity{
     private DoctorEntity doctor;
     private PatientEntity patient;
-
-    //TODO DEFINE FIELDS
-
+    private String caseHistory;
+    private String examinationType; //prophylaxis, primaryExamination, secondaryExamination
+    private String laboratoryTests;
+    private String therapy;
+    private String healthCondition;
 
     public PhysicalExamination() {
     }
@@ -19,14 +21,14 @@ public class PhysicalExamination extends BaseEntity{
         return doctor;
     }
 
-    @ManyToOne
-    public PatientEntity getPatient() {
-        return patient;
-    }
-
     public PhysicalExamination setDoctor(DoctorEntity doctor) {
         this.doctor = doctor;
         return this;
+    }
+
+    @ManyToOne
+    public PatientEntity getPatient() {
+        return patient;
     }
 
     public PhysicalExamination setPatient(PatientEntity patient) {
