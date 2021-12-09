@@ -29,6 +29,7 @@ public class UserServiceModel extends BaseServiceModel {
     private Boolean isEnabled;
     private Boolean isAccountNonLocked;
     private String initialRawPassword;
+    private Boolean isAnonymous;
 
     public UserServiceModel() {
         this.roles = new ArrayList<>();
@@ -220,6 +221,15 @@ public class UserServiceModel extends BaseServiceModel {
 
     public UserServiceModel setAccountNonLocked(Boolean accountNonLocked) {
         isAccountNonLocked = accountNonLocked;
+        return this;
+    }
+
+    public Boolean getAnonymous() {
+        return isAnonymous;
+    }
+
+    public UserServiceModel setAnonymous(Boolean anonymous) {
+        isAnonymous = anonymous;
         return this;
     }
 }

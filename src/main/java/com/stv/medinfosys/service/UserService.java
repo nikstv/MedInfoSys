@@ -37,4 +37,6 @@ public interface UserService {
     void markForDelete(Long userId);
 
     void lockAccountToogle(Long userId);
+
+    void anonymizeAllMarkedForDeleteUsers();
 }

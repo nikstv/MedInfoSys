@@ -1,6 +1,6 @@
 package com.stv.medinfosys.web;
 
-import com.stv.medinfosys.components.CustomMapper;
+import com.stv.medinfosys.utils.CustomMapper;
 import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
 import com.stv.medinfosys.model.binding.PatientEditBindingModel;
 import com.stv.medinfosys.model.binding.PatientRegisterBindingModel;

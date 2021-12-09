@@ -27,6 +27,7 @@ public class UserEntity extends BaseEntity {
     private CloudinaryPictureEntity picture;
     private Boolean isEnabled;
     private Boolean isAccountNonLocked;
+    private Boolean isAnonymous;
 
     public UserEntity() {
         this.roles=new ArrayList<>();
@@ -227,6 +228,15 @@ public class UserEntity extends BaseEntity {
 
     public UserEntity setAccountNonLocked(Boolean accountNonLocked) {
         isAccountNonLocked = accountNonLocked;
+        return this;
+    }
+
+    public Boolean getAnonymous() {
+        return isAnonymous;
+    }
+
+    public UserEntity setAnonymous(Boolean anonymous) {
+        isAnonymous = anonymous;
         return this;
     }
 }

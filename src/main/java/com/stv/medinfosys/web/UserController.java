@@ -1,6 +1,6 @@
 package com.stv.medinfosys.web;
 
-import com.stv.medinfosys.components.CustomMapper;
+import com.stv.medinfosys.utils.CustomMapper;
 import com.stv.medinfosys.model.binding.UserLoginBindingModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
 import com.stv.medinfosys.model.view.UserInfoViewModel;

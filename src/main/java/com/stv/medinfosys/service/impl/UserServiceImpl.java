@@ -268,13 +268,39 @@ public class UserServiceImpl implements UserService {
 
         UserEntity userEntity = byId.get();
 
-        if (userEntity.getAccountNonLocked()==true){
+        if (userEntity.getAccountNonLocked() == true) {
             userEntity.setAccountNonLocked(false);
-        } else if (userEntity.getAccountNonLocked()==false){
+        } else if (userEntity.getAccountNonLocked() == false) {
             userEntity.setAccountNonLocked(true);
         }
 
         this.userRepository.save(userEntity);
         this.expireSessionNow(userEntity.getUsername());
+    }
+
+    @Override
+    public void anonymizeAllMarkedForDeleteUsers() {
+        List<UserEntity> all = this.userRepository.findAllByEnabledIsFalseAndAnonymousIsFalse();
+        for (UserEntity user : all) {
+            user
+                    .setUsername(UUID.randomUUID().toString())
+                    .setPassword(UUID.randomUUID().toString())
+                    .setFirstName("Anonymous")
+                    .setMiddleName("Anonymous")
+                    .setLastName("Anonymous")
+                    .setPersonalCitizenNumber(UUID.randomUUID().toString())
+                    .setIdentityDocNumber("Anonymous")
+                    .setTelNumber("Anonymous")
+                    .setState("Anonymous")
+                    .setMunicipality("Anonymous")
+                    .setCity("Anonymous")
+                    .setDistrict("Anonymous")
+                    .setStreet("Anonymous")
+                    .setNumber("Anonymous")
+                    .setAdditionalInfo("Anonymous")
+                    .setPicture(null)
+                    .setAnonymous(true);
+            this.userRepository.save(user);
+        }
     }
 }

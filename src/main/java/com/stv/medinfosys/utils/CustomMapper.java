@@ -1,4 +1,4 @@
-package com.stv.medinfosys.components;
+package com.stv.medinfosys.utils;
 
 import com.stv.medinfosys.model.binding.UserBaseBindingModel;
 import com.stv.medinfosys.model.service.CloudinaryPictureServiceModel;
@@ -48,6 +48,7 @@ public class CustomMapper {
         userServiceModel.setRoles(roleServiceModels);
         userServiceModel.setAccountNonLocked(true);
         userServiceModel.setEnabled(true);
+        userServiceModel.setAnonymous(false);
 
         return userServiceModel;
     }

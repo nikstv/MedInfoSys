@@ -17,4 +17,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.role='PATIENT'")
     List<UserEntity> findAllPatients();
+
+    List<UserEntity> findAllByEnabledIsFalseAndAnonymousIsFalse();
 }

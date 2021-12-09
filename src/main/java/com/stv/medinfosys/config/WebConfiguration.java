@@ -3,9 +3,11 @@ package com.stv.medinfosys.config;
 import com.stv.medinfosys.web.interceptor.ActiveUserCountInterceptor;
 import com.stv.medinfosys.web.interceptor.UserAccessStatsInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
+@EnableScheduling
 public class WebConfiguration implements WebMvcConfigurer {
     private final UserAccessStatsInterceptor userAccessStatsInterceptor;
     private final ActiveUserCountInterceptor activeUserCountInterceptor;
