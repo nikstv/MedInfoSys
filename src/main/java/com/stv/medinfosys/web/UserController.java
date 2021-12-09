@@ -1,13 +1,13 @@
 package com.stv.medinfosys.web;
 
+import com.stv.medinfosys.model.enums.UserRoleEnum;
+import com.stv.medinfosys.model.service.MedicalSpecialtyServiceModel;
+import com.stv.medinfosys.model.service.UserRoleServiceModel;
+import com.stv.medinfosys.service.*;
 import com.stv.medinfosys.utils.CustomMapper;
 import com.stv.medinfosys.model.binding.UserLoginBindingModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
 import com.stv.medinfosys.model.view.UserInfoViewModel;
-import com.stv.medinfosys.service.CloudinaryService;
-import com.stv.medinfosys.service.CountryService;
-import com.stv.medinfosys.service.UserRoleService;
-import com.stv.medinfosys.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.stream.Collectors;
 
 @Controller
 public class UserController {
@@ -29,12 +30,15 @@ public class UserController {
     private final UserRoleService userRoleService;
     private final CloudinaryService cloudinaryService;
     private final CustomMapper customMapper;
+    private final DoctorService doctorService;
 
     public UserController(ModelMapper modelMapper,
                           UserService userService,
                           CountryService countryService,
                           UserRoleService userRoleService,
-                          CloudinaryService cloudinaryService, CustomMapper customMapper) {
+                          CloudinaryService cloudinaryService,
+                          CustomMapper customMapper,
+                          DoctorService doctorService) {
 
         this.modelMapper = modelMapper;
         this.userService = userService;
@@ -42,6 +46,7 @@ public class UserController {
         this.userRoleService = userRoleService;
         this.cloudinaryService = cloudinaryService;
         this.customMapper = customMapper;
+        this.doctorService = doctorService;
     }
 
     @GetMapping("/user/login")
@@ -77,8 +82,22 @@ public class UserController {
         UserInfoViewModel userInfoViewModel = this.customMapper.mapUserServiceModelToViewModel(userByIdServiceModel);
         model.addAttribute("userInfoViewModel", userInfoViewModel);
 
-        //TODO SHOW ROLES
-        //TODO EDIT ROLES
+        model.addAttribute("isDoctor", false);
+        boolean isDoctor = userByIdServiceModel.getRoles().stream()
+                .map(UserRoleServiceModel::getRole)
+                .collect(Collectors.toList())
+                .contains(UserRoleEnum.DOCTOR);
+
+
+        if (isDoctor){
+            String specialties = this.doctorService.findDoctorProfileByUserId(userByIdServiceModel.getId())
+                    .getSpecialties()
+                    .stream()
+                    .map(MedicalSpecialtyServiceModel::getSpecialtyName)
+                    .collect(Collectors.joining(", "));
+            model.addAttribute("specialties", specialties);
+            model.addAttribute("isDoctor", true);
+        }
 
         return "user-details-view";
     }
@@ -94,5 +113,4 @@ public class UserController {
     public String sessionExpired(){
         return "session-expired";
     }
-
 }

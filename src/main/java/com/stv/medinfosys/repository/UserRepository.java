@@ -15,8 +15,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUsername(String username);
     Optional<UserEntity> findByPersonalCitizenNumber(String personalCitizenNumber);
 
-    @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.role='PATIENT'")
-    List<UserEntity> findAllPatients();
+    @Query("SELECT u FROM UserEntity u JOIN u.roles r WHERE r.role='PATIENT' AND u.enabled=true")
+    List<UserEntity> findAllEnabledPatients();
 
     List<UserEntity> findAllByEnabledIsFalseAndAnonymousIsFalse();
+
+    List<UserEntity> findAllByEnabledIsTrue();
 }

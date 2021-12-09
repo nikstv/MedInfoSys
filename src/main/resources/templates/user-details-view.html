@@ -18,7 +18,8 @@
             <h5 class="card-title">The generated user credentials will disapper after refreshing this page and can not
                 be restored!</h5>
             <h5 class="card-title">In case of loss, a new user credentials have to be requested.</h5>
-            <p th:if="${initialUsername}" class="card-text" th:text="'Initial username: ' + ${initialUsername}">InitialUsername</p>
+            <p th:if="${initialUsername}" class="card-text" th:text="'Initial username: ' + ${initialUsername}">
+                InitialUsername</p>
             <p class="card-text" th:text="'Initial password: ' + ${initialPassword}">InitialPassword</p>
         </div>
     </div>
@@ -29,7 +30,7 @@
                 <div class="card personal-id-info-photo">
                     <div class="card-body text-center">
                         <img th:src="*{profilePicture} ? *{profilePicture} : @{/img/ProfilePhoto.jpg}"
-                              alt="Profile photo" class="img-fluid mx-auto personal-photo">
+                             alt="Profile photo" class="img-fluid mx-auto personal-photo">
                     </div>
                 </div>
             </div>
@@ -43,6 +44,32 @@
                         <li class="list-group-item">
                             <h6>ADDRESS:</h6>
                             <span th:text="*{address}"></span>
+                        </li>
+                        <li class="list-group-item" th:if="${isDoctor}">
+                            <h6>Medical specialties:</h6>
+                            <span th:text="${specialties}"></span>
+                        </li>
+                        <li class="list-group-item text-center" sec:authorize="hasRole('ADMIN')">
+                            <h5>Actions</h5>
+                            <a class="btn btn-info" th:href="@{/admin/user/{id}/edit(id=*{userId})}">Edit personal
+                                information</a>
+                            <a class="btn btn-info" th:if="${isDoctor}"
+                               th:href="@{/admin/edit-doctor-specialties/{id}(id=*{userId})}">Edit medical
+                                specialties</a>
+                            <form th:method="POST" th:action="@{/admin/user/{id}/invalidate-session(id=*{userId})}"
+                                  class="post-button-form invalidateAcc">
+                                <button class="btn btn-info" type="submit">Invalidate</button>
+                            </form>
+                            <form th:method="POST" th:action="@{/admin/user/{id}/lock-account-toogle(id=*{userId})}"
+                                  class="post-button-form lockAcc">
+                                <button class="btn btn-info" type="submit" th:text="*{accountNonLocked}? Lock:Unlock">
+                                    Lock/Unlock
+                                </button>
+                            </form>
+                            <form th:method="POST" th:action="@{/admin/user/{id}/delete-account(id=*{userId})}"
+                                  class="post-button-form deleteAcc">
+                                <button class="btn btn-danger" type="submit">Delete</button>
+                            </form>
                         </li>
                     </ul>
                 </div>
@@ -63,42 +90,7 @@
     </div>
     <div class="card personal-card-large">
         <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-                content.</p>
-            <div class="table-responsive">
-                <table class="table table-dark">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">First</th>
-                        <th scope="col">Last</th>
-                        <th scope="col">Handle</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Jacob</td>
-                        <td>Thornton</td>
-                        <td>@fat</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Larry</td>
-                        <td>the Bird</td>
-                        <td>@twitter</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <h5 class="card-title">Title</h5>
         </div>
     </div>
 </div>

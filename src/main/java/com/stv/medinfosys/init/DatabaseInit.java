@@ -123,6 +123,64 @@ public class DatabaseInit implements CommandLineRunner {
                 .setAccountNonLocked(true);
 
         this.userService.saveToDb(doctor);
+
+        UserServiceModel firstPatient = new UserServiceModel();
+        firstPatient
+                .setUsername("patient1")
+                .setPassword("1234")
+                .setFirstName("Tsanko")
+                .setMiddleName("Goshov")
+                .setLastName("Nikolaev")
+                .setCity("Sofiqa")
+                .setStreet("Vitosha")
+                .setPersonalCitizenNumber("3654526352")
+                .setIdentityDocNumber("654125365")
+                .setCountry(Bulgaria)
+                .setNumber("254")
+                .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.PATIENT)))
+                .setTelNumber("0326541452")
+                .setEnabled(true)
+                .setAccountNonLocked(true);
+        this.userService.saveToDb(firstPatient);
+
+        UserServiceModel secondPatient = new UserServiceModel();
+        secondPatient
+                .setUsername("patient2")
+                .setPassword("1234")
+                .setFirstName("Georgi")
+                .setMiddleName("Nikolov")
+                .setLastName("Shterev")
+                .setCity("Sofiqa")
+                .setStreet("Vitosha")
+                .setPersonalCitizenNumber("8375621847")
+                .setIdentityDocNumber("654125365")
+                .setCountry(Bulgaria)
+                .setNumber("254")
+                .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.PATIENT)))
+                .setTelNumber("0326541452")
+                .setEnabled(true)
+                .setAccountNonLocked(true);
+        this.userService.saveToDb(secondPatient);
+
+        UserServiceModel thirdPatient = new UserServiceModel();
+        thirdPatient
+                .setUsername("patient3")
+                .setPassword("1234")
+                .setFirstName("Tsanko")
+                .setMiddleName("Goshov")
+                .setLastName("Nikolaev")
+                .setCity("Sofiqa")
+                .setStreet("Vitosha")
+                .setPersonalCitizenNumber("3949698352")
+                .setIdentityDocNumber("654125365")
+                .setCountry(Bulgaria)
+                .setNumber("254")
+                .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.PATIENT)))
+                .setTelNumber("0326541452")
+                .setEnabled(true)
+                .setAccountNonLocked(true);
+        this.userService.saveToDb(thirdPatient);
+
     }
 
     private void initUserRoles() {

@@ -2,7 +2,6 @@ package com.stv.medinfosys.web;
 
 import com.stv.medinfosys.model.service.UserServiceModel;
 import com.stv.medinfosys.model.view.AdminPanelUserViewModel;
-import com.stv.medinfosys.repository.UserRepository;
 import com.stv.medinfosys.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -27,7 +26,7 @@ public class MedInfoSysRestController {
     @GetMapping("/api/get-all-users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<AdminPanelUserViewModel>> getAllUsers(){
-        List<UserServiceModel> allUsers = this.userService.findAllUsers();
+        List<UserServiceModel> allUsers = this.userService.findAllEnabledUsers();
 
         Type type = new TypeToken<List<AdminPanelUserViewModel>>() {
         }.getType();
@@ -39,7 +38,7 @@ public class MedInfoSysRestController {
     @GetMapping("/api/get-all-patients")
     @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<List<AdminPanelUserViewModel>> getAllPatients(){
-        List<UserServiceModel> allPatients = this.userService.findAllPatients();
+        List<UserServiceModel> allPatients = this.userService.findAllEnabledPatients();
 
         Type type = new TypeToken<List<AdminPanelUserViewModel>>() {
         }.getType();

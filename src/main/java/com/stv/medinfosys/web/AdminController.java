@@ -1,14 +1,13 @@
 package com.stv.medinfosys.web;
 
+import com.stv.medinfosys.model.service.BaseServiceModel;
+import com.stv.medinfosys.model.service.DoctorServiceModel;
+import com.stv.medinfosys.service.*;
 import com.stv.medinfosys.utils.CustomMapper;
 import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
 import com.stv.medinfosys.model.binding.UserEditBindingModel;
 import com.stv.medinfosys.model.binding.UserRegisterBindingModel;
 import com.stv.medinfosys.model.service.UserServiceModel;
-import com.stv.medinfosys.service.CloudinaryService;
-import com.stv.medinfosys.service.CountryService;
-import com.stv.medinfosys.service.UserRoleService;
-import com.stv.medinfosys.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,22 +27,25 @@ public class AdminController {
     private final ModelMapper modelMapper;
     private final UserRoleService userRoleService;
     private final CountryService countryService;
-    private final CloudinaryService cloudinaryService;
     private final CustomMapper customMapper;
+    private final MedicalSpecialtyService medicalSpecialtyService;
+    private final DoctorService doctorService;
 
     public AdminController(UserService userService,
                            ModelMapper modelMapper,
                            UserRoleService userRoleService,
                            CountryService countryService,
-                           CloudinaryService cloudinaryService,
-                           CustomMapper customMapper) {
+                           CustomMapper customMapper,
+                           MedicalSpecialtyService medicalSpecialtyService,
+                           DoctorService doctorService) {
 
         this.userService = userService;
         this.modelMapper = modelMapper;
         this.userRoleService = userRoleService;
         this.countryService = countryService;
-        this.cloudinaryService = cloudinaryService;
         this.customMapper = customMapper;
+        this.medicalSpecialtyService = medicalSpecialtyService;
+        this.doctorService = doctorService;
     }
 
     @GetMapping("/admin/users")
@@ -165,5 +168,30 @@ public class AdminController {
     public String lockAccount(@PathVariable Long id) {
         this.userService.lockAccountToogle(id);
         return "redirect:/admin/users";
+    }
+
+    @GetMapping("/admin/edit-doctor-specialties/{id}")
+    public String editDoctorMedicalSpecialties(@PathVariable Long id, Model model) {
+
+        DoctorServiceModel doctorProfileByUserId = this.doctorService.findDoctorProfileByUserId(id);
+        List<Long> specialtiesView = doctorProfileByUserId.getSpecialties().stream()
+                .map(BaseServiceModel::getId)
+                .collect(Collectors.toList());
+
+        model.addAttribute("allSpecialties", this.medicalSpecialtyService.getAllMedicalSpecialties());
+        model.addAttribute("specialtiesView", specialtiesView);
+
+        return "doctor-medical-specialties-edit";
+    }
+
+    @PatchMapping("/admin/edit-doctor-specialties/{id}")
+    public String editDoctorMedicalSpecialtiesConfirm(@PathVariable("id") Long userId, @RequestParam(name = "roles", required = false) List<Long> rolesIds) {
+        if (rolesIds == null) {
+            rolesIds = new ArrayList<>();
+        }
+
+        Long doctorId = this.doctorService.findDoctorProfileByUserId(userId).getId();
+        this.doctorService.patchDoctorMedicalSpecialties(doctorId, rolesIds);
+        return "redirect:/user/" + userId + "/details";
     }
 }

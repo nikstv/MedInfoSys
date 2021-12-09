@@ -92,6 +92,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserServiceModel> findAllEnabledUsers() {
+        List<UserEntity> all = this.userRepository.findAllByEnabledIsTrue();
+        Type userServiceModelTypeToken = new TypeToken<List<UserServiceModel>>() {
+        }.getType();
+
+        return modelMapper.map(all, userServiceModelTypeToken);
+    }
+
+    @Override
     public UserServiceModel findUserById(Long id) {
         Optional<UserEntity> byId = this.userRepository.findById(id);
         if (byId.isEmpty()) {
@@ -232,8 +241,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserServiceModel> findAllPatients() {
-        List<UserEntity> allPatients = this.userRepository.findAllPatients();
+    public List<UserServiceModel> findAllEnabledPatients() {
+        List<UserEntity> allPatients = this.userRepository.findAllEnabledPatients();
         Type type = new TypeToken<List<UserServiceModel>>() {
         }.getType();
 

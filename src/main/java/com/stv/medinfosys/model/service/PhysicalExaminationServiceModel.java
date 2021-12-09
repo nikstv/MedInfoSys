@@ -1,6 +1,6 @@
 package com.stv.medinfosys.model.service;
 
-public class PhysicalExaminationServiceModel {
+public class PhysicalExaminationServiceModel extends BaseServiceModel{
     private DoctorServiceModel doctor;
     private PatientServiceModel patient;
 

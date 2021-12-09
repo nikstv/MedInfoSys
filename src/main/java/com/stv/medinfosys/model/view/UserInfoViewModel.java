@@ -8,6 +8,8 @@ public class UserInfoViewModel {
     private String idDocNumber;
     private String userId;
     private String profilePicture;
+    private Boolean isAccountNonLocked;
+
 
     public UserInfoViewModel() {
     }
@@ -72,6 +74,15 @@ public class UserInfoViewModel {
 
     public UserInfoViewModel setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+        return this;
+    }
+
+    public Boolean getAccountNonLocked() {
+        return isAccountNonLocked;
+    }
+
+    public UserInfoViewModel setAccountNonLocked(Boolean accountNonLocked) {
+        isAccountNonLocked = accountNonLocked;
         return this;
     }
 }

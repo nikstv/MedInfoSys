@@ -29,13 +29,13 @@
 
                 <th:block sec:authorize="hasRole('ADMIN')">
                     <li class="nav-item"><a class="nav-link" href="/admin/user/register">Register new user</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/admin/users">View all users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/admin/users">Users admin panel</a></li>
                 </th:block>
 
                 <th:block sec:authorize="hasRole('DOCTOR') && hasRole('ADMIN')==false">
                     <li class="nav-item"><a class="nav-link" href="/doctor/register-patient">Register new patient</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="/doctor/get-all-patients">View all patients</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/doctor/get-all-patients">Patients panel</a></li>
                 </th:block>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <form th:method="POST" th:action="@{/user/logout}">

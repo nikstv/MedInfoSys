@@ -1,4 +1,4 @@
-package com.stv.medinfosys.Schedules;
+package com.stv.medinfosys.schedules;
 
 import com.stv.medinfosys.service.UserService;
 import org.springframework.scheduling.annotation.Scheduled;

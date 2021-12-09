@@ -81,7 +81,8 @@ public class CustomMapper {
                 .setPersonalCitizenNumber(personalCitizenNumber)
                 .setPhoneNumber(phoneNumber)
                 .setIdDocNumber(idDocNumber)
-                .setUserId(userByIdServiceModel.getId().toString());
+                .setUserId(userByIdServiceModel.getId().toString())
+                .setAccountNonLocked(userByIdServiceModel.getAccountNonLocked());
 
         if (userByIdServiceModel.getPicture() != null) {
             userInfoViewModel.setProfilePicture(userByIdServiceModel.getPicture().getUrl());

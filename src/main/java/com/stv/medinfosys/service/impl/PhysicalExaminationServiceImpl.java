@@ -26,7 +26,7 @@ public class PhysicalExaminationServiceImpl implements PhysicalExaminationServic
     public PhysicalExaminationServiceModel findPhysicalExaminationById(Long id) {
         Optional<PhysicalExaminationEntity> byId = this.physicalExaminationRepository.findById(id);
         if (byId.isEmpty()) {
-            throw new ObjectNotFoundException("Physical examnation with id " + id + " was not found.");
+            throw new ObjectNotFoundException("Physical examination with id " + id + " was not found.");
         }
 
         return this.modelMapper.map(byId.get(), PhysicalExaminationServiceModel.class);

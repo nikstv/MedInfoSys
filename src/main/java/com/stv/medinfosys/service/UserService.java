@@ -14,6 +14,8 @@ public interface UserService {
 
     List<UserServiceModel> findAllUsers();
 
+    List<UserServiceModel> findAllEnabledUsers();
+
     UserServiceModel findUserById(Long id);
 
     UserServiceModel patchUser(UserServiceModel updated, Long userToPatchId);
@@ -30,7 +32,7 @@ public interface UserService {
 
     boolean hasPatientRole(Long userId);
 
-    List<UserServiceModel> findAllPatients();
+    List<UserServiceModel> findAllEnabledPatients();
 
     ActiveUserCountViewModel getCountOfActiveUsers();
 
