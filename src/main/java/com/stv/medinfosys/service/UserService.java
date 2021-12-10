@@ -24,7 +24,7 @@ public interface UserService {
 
     String generateNewUserPassword(Long id);
 
-    UserServiceModel findUserByPersonalCitizenNumber(String personalCitizenNumber); //TODO DELETE
+    UserServiceModel findUserByPersonalCitizenNumber(String personalCitizenNumber);
 
     boolean canViewUserDetails(Long userId);
 

@@ -11,7 +11,6 @@ import com.stv.medinfosys.model.service.UserServiceModel;
 import com.stv.medinfosys.model.view.ActiveUserCountViewModel;
 import com.stv.medinfosys.repository.UserRepository;
 import com.stv.medinfosys.service.CloudinaryService;
-import com.stv.medinfosys.service.UserRoleService;
 import com.stv.medinfosys.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -181,7 +180,6 @@ public class UserServiceImpl implements UserService {
         return newPassword;
     }
 
-    //TODO DELETE
     @Override
     public UserServiceModel findUserByPersonalCitizenNumber(String personalCitizenNumber) {
         Optional<UserEntity> byPersonalCitizenNumber = this.userRepository.findByPersonalCitizenNumber(personalCitizenNumber);
