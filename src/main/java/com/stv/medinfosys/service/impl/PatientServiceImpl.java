@@ -1,5 +1,6 @@
 package com.stv.medinfosys.service.impl;
 
+import com.stv.medinfosys.exception.ObjectNotFoundException;
 import com.stv.medinfosys.model.entity.PatientEntity;
 import com.stv.medinfosys.model.entity.UserEntity;
 import com.stv.medinfosys.model.service.PatientServiceModel;
@@ -48,9 +49,21 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public List<PatientServiceModel> getAllPatients(){
+    public List<PatientServiceModel> getAllPatients() {
         List<PatientEntity> all = this.patientRepository.findAll();
-        Type type = new TypeToken<List<PatientServiceModel>>() {}.getType();
+        Type type = new TypeToken<List<PatientServiceModel>>() {
+        }.getType();
         return this.modelMapper.map(all, type);
+    }
+
+    @Override
+    public PatientServiceModel findPatientByUserId(Long userId) {
+        Optional<PatientEntity> patientOpt
+                = this.patientRepository.findPatientEntityByPatientProfile_Id(userId);
+        if (patientOpt.isEmpty()) {
+            throw new ObjectNotFoundException("User with id " + userId + " is not patient.");
+        }
+
+        return modelMapper.map(patientOpt.get(), PatientServiceModel.class);
     }
 }

@@ -3,7 +3,8 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:replace="fragments/fragments::head"></head>
+<head th:replace="fragments/fragments::head">
+</head>
 
 <body>
 <!-- Responsive navbar-->
@@ -11,59 +12,96 @@
 <!-- Page content-->
 <div class="container">
     <div th:replace="fragments/fragments::body-header"></div>
-    <div class="personal-card-large">
-        <div class="row">
 
-
-            <div class="col-lg-6">
-                <div class="card personal-id-info-card">
-                    <h2 class="text-center">Patient personal information:</h2>
-                    <ul class="list-group">
-                        <li class="list-group-item" th:text="${patient.fullName}">First, Second, Last Name</li>
-                        <li class="list-group-item" th:text="${patient.personalCitizenNumber}">Personal Citizen Number
-                        </li>
-                        <li class="list-group-item" th:text="${patient.idDocNumber}">ID Doc Number</li>
-                        <li class="list-group-item" th:text="${patient.phoneNumber}">Phone number</li>
-                        <li class="list-group-item">
-                            <h6>ADDRESS:</h6>
-                            <span th:text="${patient.address}"></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-
-            <div class="col-lg-6">
-                <div class="card personal-id-info-card">
-                    <h2 class="text-center">Doctor personal information:</h2>
-                    <ul class="list-group">
-                        <li class="list-group-item" th:text="${doctor.fullName}">First, Second, Last Name</li>
-                        <li class="list-group-item" th:text="${doctor.personalCitizenNumber}">Personal Citizen Number
-                        </li>
-                        <li class="list-group-item" th:text="${doctor.idDocNumber}">ID Doc Number</li>
-                        <li class="list-group-item" th:text="${doctor.phoneNumber}">Phone number</li>
-                        <li class="list-group-item">
-                            <h6>ADDRESS:</h6>
-                            <span th:text="${doctor.address}"></span>
-                        </li>
-                        <li class="list-group-item">
-                            <h6>Medical specialties:</h6>
-                            <span th:text="${medicalSpecialties}"></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
     <div class="card personal-card-large">
         <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-                content.</p>
+            <h5 class="card-title text-center">Registration form</h5>
+            <p class="card-text text-center">Please fill the required fields</p>
+
+            <form
+                    th:action="@{/doctor/physical-examination/{id}(id=${id})}"
+                    th:method="POST"
+                    class="main-form mx-auto col-md-8 d-flex flex-column justify-content-center"
+                    th:object="${physicalExaminationBindingModel}"
+            >
+
+                <div class="row">
+                    <div class="form-group col-md-12 mb-3">
+                        <label for="caseHistory" class="text-black font-weight-bold">Case history</label>
+                        <textarea class="form-control" rows="5" id="caseHistory" name="caseHistory"
+                                  th:errorclass="is-invalid" placeholder="Case history"
+                                  th:text="*{caseHistory}"></textarea>
+                        <p class="errors alert alert-danger invalid-feedback">
+                            Case history is required.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-12 mb-3">
+                        <label for="laboratoryTests" class="text-black font-weight-bold">Laboratory tests</label>
+                        <textarea class="form-control" rows="5" id="laboratoryTests" name="laboratoryTests"
+                                  th:errorclass="is-invalid" placeholder="Laboratory tests"
+                                  th:text="*{laboratoryTests}"></textarea>
+                        <p class="errors alert alert-danger invalid-feedback">
+                            Laboratory tests field is required.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-12 mb-3">
+                        <label for="therapy" class="text-black font-weight-bold">Therapy</label>
+                        <textarea class="form-control" rows="5" id="therapy" name="therapy" th:errorclass="is-invalid"
+                                  placeholder="Therapy" th:text="*{therapy}"></textarea>
+                        <p class="errors alert alert-danger invalid-feedback">
+                            Therapy field is required.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-md-12 mb-3">
+                        <label for="healthCondition" class="text-black font-weight-bold">Health condition</label>
+                        <textarea class="form-control" rows="5" id="healthCondition" name="healthCondition"
+                                  th:errorclass="is-invalid" placeholder="Health condition"
+                                  th:text="*{healthCondition}"></textarea>
+                        <p class="errors alert alert-danger invalid-feedback">
+                            Health condition field is required.
+                        </p>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group col-md-12 mb-3">
+                        <label for="diagnoses" class="text-black font-weight-bold">Diagnoses</label>
+                        <input
+                                id="diagnoses"
+                                th:errorclass="is-invalid"
+                                name="diagnoses"
+                                type="text"
+                                minlength="4" maxlength="20"
+                                class="form-control"
+                                placeholder="Diagnoses"
+                                th:value="*{diagnoses}"
+                        />
+                        <p class="errors alert alert-danger invalid-feedback">
+                            Diagnoses is required.
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col col-md-4">
+                        <div class="button-holder d-flex">
+                            <input type="submit" class="btn btn-primary" value="Save physical examination"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
+
 </div>
 <footer th:replace="fragments/fragments::body-footer"></footer>
 <!-- Bootstrap core JS-->
@@ -71,5 +109,4 @@
 <!-- Core theme JS-->
 <script src="/js/scripts.js"></script>
 </body>
-
 </html>

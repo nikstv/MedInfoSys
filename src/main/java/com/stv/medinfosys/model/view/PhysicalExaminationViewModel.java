@@ -1,32 +1,32 @@
-package com.stv.medinfosys.model.service;
+package com.stv.medinfosys.model.view;
 
-public class PhysicalExaminationServiceModel extends BaseServiceModel{
-    private DoctorServiceModel doctor;
-    private PatientServiceModel patient;
-
+public class PhysicalExaminationViewModel {
+    private Long id;
+    private String doctor;
+    private String patient;
     private String caseHistory;
     private String laboratoryTests;
     private String therapy;
     private String healthCondition;
     private String diagnoses;
 
-    public PhysicalExaminationServiceModel() {
+    public PhysicalExaminationViewModel() {
     }
 
-    public DoctorServiceModel getDoctor() {
+    public String getDoctor() {
         return doctor;
     }
 
-    public PhysicalExaminationServiceModel setDoctor(DoctorServiceModel doctor) {
+    public PhysicalExaminationViewModel setDoctor(String doctor) {
         this.doctor = doctor;
         return this;
     }
 
-    public PatientServiceModel getPatient() {
+    public String getPatient() {
         return patient;
     }
 
-    public PhysicalExaminationServiceModel setPatient(PatientServiceModel patient) {
+    public PhysicalExaminationViewModel setPatient(String patient) {
         this.patient = patient;
         return this;
     }
@@ -35,7 +35,7 @@ public class PhysicalExaminationServiceModel extends BaseServiceModel{
         return caseHistory;
     }
 
-    public PhysicalExaminationServiceModel setCaseHistory(String caseHistory) {
+    public PhysicalExaminationViewModel setCaseHistory(String caseHistory) {
         this.caseHistory = caseHistory;
         return this;
     }
@@ -44,7 +44,7 @@ public class PhysicalExaminationServiceModel extends BaseServiceModel{
         return laboratoryTests;
     }
 
-    public PhysicalExaminationServiceModel setLaboratoryTests(String laboratoryTests) {
+    public PhysicalExaminationViewModel setLaboratoryTests(String laboratoryTests) {
         this.laboratoryTests = laboratoryTests;
         return this;
     }
@@ -53,7 +53,7 @@ public class PhysicalExaminationServiceModel extends BaseServiceModel{
         return therapy;
     }
 
-    public PhysicalExaminationServiceModel setTherapy(String therapy) {
+    public PhysicalExaminationViewModel setTherapy(String therapy) {
         this.therapy = therapy;
         return this;
     }
@@ -62,7 +62,7 @@ public class PhysicalExaminationServiceModel extends BaseServiceModel{
         return healthCondition;
     }
 
-    public PhysicalExaminationServiceModel setHealthCondition(String healthCondition) {
+    public PhysicalExaminationViewModel setHealthCondition(String healthCondition) {
         this.healthCondition = healthCondition;
         return this;
     }
@@ -71,8 +71,17 @@ public class PhysicalExaminationServiceModel extends BaseServiceModel{
         return diagnoses;
     }
 
-    public PhysicalExaminationServiceModel setDiagnoses(String diagnoses) {
+    public PhysicalExaminationViewModel setDiagnoses(String diagnoses) {
         this.diagnoses = diagnoses;
+        return this;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public PhysicalExaminationViewModel setId(Long id) {
+        this.id = id;
         return this;
     }
 }

@@ -241,6 +241,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean hasDoctorRole(Long userId) {
+        Optional<UserEntity> byIdOpt = this.userRepository.findById(userId);
+        if (byIdOpt.isEmpty()) {
+            throw new ObjectNotFoundException("User with id " + userId + " was not found");
+        }
+
+        return byIdOpt.get().getRoles().stream()
+                .map(UserRoleEntity::getRole)
+                .collect(Collectors.toList())
+                .contains(UserRoleEnum.DOCTOR);
+    }
+
+    @Override
     public List<UserServiceModel> findAllEnabledPatients() {
         List<UserEntity> allPatients = this.userRepository.findAllEnabledPatients();
         Type type = new TypeToken<List<UserServiceModel>>() {

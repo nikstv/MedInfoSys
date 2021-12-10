@@ -13,4 +13,6 @@ public interface DoctorService {
     DoctorServiceModel findDoctorProfileByUserId(Long userId);
 
     void patchDoctorMedicalSpecialties(Long doctorId, List<Long> specialtiesIds);
+
+    DoctorServiceModel findDoctorByUserUsername(String username);
 }

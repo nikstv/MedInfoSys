@@ -32,6 +32,8 @@ public interface UserService {
 
     boolean hasPatientRole(Long userId);
 
+    boolean hasDoctorRole(Long userId);
+
     List<UserServiceModel> findAllEnabledPatients();
 
     ActiveUserCountViewModel getCountOfActiveUsers();

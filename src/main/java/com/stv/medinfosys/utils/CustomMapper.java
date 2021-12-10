@@ -1,10 +1,8 @@
 package com.stv.medinfosys.utils;
 
 import com.stv.medinfosys.model.binding.UserBaseBindingModel;
-import com.stv.medinfosys.model.service.CloudinaryPictureServiceModel;
-import com.stv.medinfosys.model.service.CountryServiceModel;
-import com.stv.medinfosys.model.service.UserRoleServiceModel;
-import com.stv.medinfosys.model.service.UserServiceModel;
+import com.stv.medinfosys.model.service.*;
+import com.stv.medinfosys.model.view.PhysicalExaminationViewModel;
 import com.stv.medinfosys.model.view.UserInfoViewModel;
 import com.stv.medinfosys.service.CloudinaryService;
 import com.stv.medinfosys.service.CountryService;
@@ -89,6 +87,18 @@ public class CustomMapper {
         }
 
         return userInfoViewModel;
+    }
+
+    public PhysicalExaminationViewModel mapPhysicalExaminationServiceToViewModel(PhysicalExaminationServiceModel physicalExaminationServiceModel) {
+        PhysicalExaminationViewModel map = this.modelMapper.map(physicalExaminationServiceModel, PhysicalExaminationViewModel.class);
+
+        UserServiceModel doctorProfile = physicalExaminationServiceModel.getDoctor().getDoctorProfile();
+        map.setDoctor(doctorProfile.getFirstName() + " " + doctorProfile.getLastName());
+
+        UserServiceModel patientProfile = physicalExaminationServiceModel.getPatient().getPatientProfile();
+        map.setPatient(patientProfile.getFirstName() + " " + patientProfile.getLastName());
+
+        return map;
     }
 
 }

@@ -11,4 +11,6 @@ public interface PatientService {
     PatientServiceModel findPatientByUserPersonalCitizenNumber(String personalCitizenNumber);
 
     List<PatientServiceModel> getAllPatients();
+
+    PatientServiceModel findPatientByUserId(Long userId);
 }

@@ -79,4 +79,16 @@ public class DoctorServiceImpl implements DoctorService {
         DoctorEntity doctor = doctorOpt.get().setSpecialties(medicalSpecialtyEntities);
         this.doctorRepository.save(doctor);
     }
+
+    @Override
+    @Transactional
+    public DoctorServiceModel findDoctorByUserUsername(String username) {
+        Optional<DoctorEntity> doctorOpt =
+                this.doctorRepository.findDoctorEntityByDoctorProfile_Username(username);
+        if (doctorOpt.isEmpty()) {
+            throw new ObjectNotFoundException("Doctor with username " + username + " was not found");
+        }
+
+        return this.modelMapper.map(doctorOpt.get(), DoctorServiceModel.class);
+    }
 }

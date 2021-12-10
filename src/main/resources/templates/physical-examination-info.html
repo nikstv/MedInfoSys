@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="fragments/fragments::head"></head>
+
+<body>
+<!-- Responsive navbar-->
+<nav th:replace="fragments/fragments::navbar"></nav>
+<!-- Page content-->
+<div class="container">
+    <div th:replace="fragments/fragments::body-header"></div>
+    <div class="personal-card-large">
+        <div class="row">
+
+
+            <div class="col-lg-6">
+                <div class="card personal-id-info-card">
+                    <h2 class="text-center">Patient personal information:</h2>
+                    <ul class="list-group">
+                        <li class="list-group-item" th:text="${patient.fullName}">First, Second, Last Name</li>
+                        <li class="list-group-item" th:text="${patient.personalCitizenNumber}">Personal Citizen Number
+                        </li>
+                        <li class="list-group-item" th:text="${patient.idDocNumber}">ID Doc Number</li>
+                        <li class="list-group-item" th:text="${patient.phoneNumber}">Phone number</li>
+                        <li class="list-group-item">
+                            <h6>ADDRESS:</h6>
+                            <span th:text="${patient.address}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+            <div class="col-lg-6">
+                <div class="card personal-id-info-card">
+                    <h2 class="text-center">Doctor personal information:</h2>
+                    <ul class="list-group">
+                        <li class="list-group-item" th:text="${doctor.fullName}">First, Second, Last Name</li>
+                        <li class="list-group-item" th:text="${doctor.personalCitizenNumber}">Personal Citizen Number
+                        </li>
+                        <li class="list-group-item" th:text="${doctor.idDocNumber}">ID Doc Number</li>
+                        <li class="list-group-item" th:text="${doctor.phoneNumber}">Phone number</li>
+                        <li class="list-group-item">
+                            <h6>ADDRESS:</h6>
+                            <span th:text="${doctor.address}"></span>
+                        </li>
+                        <li class="list-group-item">
+                            <h6>Medical specialties:</h6>
+                            <span th:text="${medicalSpecialties}"></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+    <div class="card personal-card-large">
+        <div class="card-body">
+            <h5 class="card-title">Diagnoses</h5>
+            <p class="card-text" th:text="${physicalExamination.diagnoses}">Text</p>
+        </div>
+    </div>
+    <div class="card personal-card-large">
+        <div class="card-body">
+            <h5 class="card-title">Case history</h5>
+            <p class="card-text" th:text="${physicalExamination.caseHistory}">Text</p>
+        </div>
+    </div>
+    <div class="card personal-card-large">
+        <div class="card-body">
+            <h5 class="card-title">Health condition</h5>
+            <p class="card-text" th:text="${physicalExamination.healthCondition}">Text</p>
+        </div>
+    </div>
+    <div class="card personal-card-large">
+        <div class="card-body">
+            <h5 class="card-title">Laboratory tests</h5>
+            <p class="card-text" th:text="${physicalExamination.laboratoryTests}">Text</p>
+        </div>
+    </div>
+    <div class="card personal-card-large">
+        <div class="card-body">
+            <h5 class="card-title">Therapy</h5>
+            <p class="card-text" th:text="${physicalExamination.therapy}">Text</p>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments/fragments::body-footer"></footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="/js/scripts.js"></script>
+</body>
+
+</html>
