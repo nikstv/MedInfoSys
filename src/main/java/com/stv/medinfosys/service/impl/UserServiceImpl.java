@@ -11,6 +11,7 @@ import com.stv.medinfosys.model.service.UserServiceModel;
 import com.stv.medinfosys.model.view.ActiveUserCountViewModel;
 import com.stv.medinfosys.repository.UserRepository;
 import com.stv.medinfosys.service.CloudinaryService;
+import com.stv.medinfosys.service.PhysicalExaminationService;
 import com.stv.medinfosys.service.UserService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionInformation;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,13 +39,21 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final CloudinaryService cloudinaryService;
     private final SessionRegistry sessionRegistry;
+    private final PhysicalExaminationService physicalExaminationService;
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, CloudinaryService cloudinaryService, SessionRegistry sessionRegistry) {
+    public UserServiceImpl(UserRepository userRepository,
+                           ModelMapper modelMapper,
+                           PasswordEncoder passwordEncoder,
+                           CloudinaryService cloudinaryService,
+                           SessionRegistry sessionRegistry,
+                           PhysicalExaminationService physicalExaminationService) {
+
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
         this.cloudinaryService = cloudinaryService;
         this.sessionRegistry = sessionRegistry;
+        this.physicalExaminationService = physicalExaminationService;
     }
 
     @Override
@@ -322,5 +332,34 @@ public class UserServiceImpl implements UserService {
                     .setAnonymous(true);
             this.userRepository.save(user);
         }
+    }
+
+    @Override
+    public boolean canViewPhysicalExaminationDetails(Long physicalExaminationId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean principalIsAdmin = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + UserRoleEnum.ADMIN));
+        if (principalIsAdmin) {
+            return true;
+        }
+
+        boolean principalIsDoctor = authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_" + UserRoleEnum.DOCTOR));
+        if (principalIsDoctor) {
+            return true;
+        }
+
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        String patientUsername = this.physicalExaminationService
+                .findPhysicalExaminationById(physicalExaminationId)
+                .getPatient()
+                .getPatientProfile()
+                .getUsername();
+
+        boolean principalIsPatient = principal.getUsername().equals(patientUsername);
+        if (principalIsPatient) {
+            return true;
+        }
+
+        return false;
     }
 }

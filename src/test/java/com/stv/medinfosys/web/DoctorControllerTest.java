@@ -1,11 +1,11 @@
 package com.stv.medinfosys.web;
 
 import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
-import com.stv.medinfosys.model.entity.CountryEntity;
-import com.stv.medinfosys.model.entity.UserEntity;
-import com.stv.medinfosys.model.entity.UserRoleEntity;
+import com.stv.medinfosys.model.binding.UserEditBindingModel;
+import com.stv.medinfosys.model.entity.*;
 import com.stv.medinfosys.model.enums.UserRoleEnum;
 import com.stv.medinfosys.repository.*;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +15,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.result.StatusResultMatchers;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,6 +47,12 @@ class DoctorControllerTest {
 
     @Autowired
     UserRoleRepository userRoleRepository;
+
+    @Autowired
+    PhysicalExaminationRepository physicalExaminationRepository;
+
+    @Autowired
+    MedicalSpecialtyRepository medicalSpecialtyRepository;
 
     CountryEntity country = null;
     UserRoleEntity doctorRole = null;
@@ -93,10 +101,17 @@ class DoctorControllerTest {
                 .setEnabled(true)
                 .setAccountNonLocked(true);
         UserEntity patientSaved = this.userRepository.save(patient);
+
+        PatientEntity patientEntity = new PatientEntity().setPatientProfile(patientSaved);
+        this.patientRepository.save(patientEntity);
+
+        DoctorEntity doctorEntity = new DoctorEntity().setDoctorProfile(doctorSaved).setSpecialties(this.medicalSpecialtyRepository.findAll());
+        this.doctorRepository.save(doctorEntity);
     }
 
     @AfterEach
     void clean() {
+        this.physicalExaminationRepository.deleteAll();
         this.doctorRepository.deleteAll();
         this.patientRepository.deleteAll();
         this.userRepository.deleteAll();
@@ -294,6 +309,58 @@ class DoctorControllerTest {
                         .with(csrf())
                 )
                 .andExpect(status().is3xxRedirection())
-                .andExpect(flash().attributeExists("editBindingModel", "org.springframework.validation.BindingResult.editBindingModel"));
+                .andExpect(flash().attributeExists("editBindingModel", "org.springframework.validation.BindingResult.editBindingModel"))
+                .andExpect(redirectedUrl("/doctor/edit-patient-details/" + patient.getId() + "/err"));
+    }
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void testPatchPatientByDoctorErrorPage() throws Exception {
+        UserEntity patient = this.userRepository.findByUsername("testPatient").get();
+        mockMvc
+                .perform(get("/doctor/edit-patient-details/" + patient.getId() + "/err")
+                        .flashAttr("editBindingModel", new UserEditBindingModel()))
+                .andExpect(model().attributeExists("userId", "allCountries", "allRoles", "postLink"));
+    }
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void testGetAllPatientsPage() throws Exception {
+        mockMvc
+                .perform(get("/doctor/get-all-patients"))
+                .andExpect(model().attributeExists("link", "isAdmin"));
+    }
+
+    @Test
+    @WithMockUser(username = "doctor", roles = {"DOCTOR"})
+    public void testPhysicalExaminationPage() throws Exception {
+        UserEntity patient = this.userRepository.findByUsername("testPatient").get();
+
+        mockMvc
+                .perform(get("/doctor/physical-examination/" + patient.getId()))
+                .andExpect(model().attributeExists("physicalExaminationBindingModel"))
+                .andExpect(view().name("physical-examination"));
+    }
+
+    @Test
+    @WithMockUser(username = "testDoctor", roles = {"DOCTOR"})
+    public void testPhysicalExaminationPost() throws Exception {
+        UserEntity patient = this.userRepository.findByUsername("testPatient").get();
+
+        int physicalExaminationsOfTestPatientCountBeforePost =
+                this.physicalExaminationRepository.findAllByPatient_PatientProfile_Id(patient.getId()).size();
+
+        MvcResult mvcResult = mockMvc.perform(post("/doctor/physical-examination/" + patient.getId())
+                .param("caseHistory", "lorem")
+                .param("laboratoryTests", "lorem")
+                .param("therapy", "lorem")
+                .param("healthCondition", "lorem")
+                .param("diagnoses", "lorem ipsum")
+                .with(csrf())).andReturn();
+
+        int physicalExaminationsOfTestPatientCountAfterPost =
+                this.physicalExaminationRepository.findAllByPatient_PatientProfile_Id(patient.getId()).size();
+
+        assertEquals(physicalExaminationsOfTestPatientCountBeforePost + 1, physicalExaminationsOfTestPatientCountAfterPost);
     }
 }

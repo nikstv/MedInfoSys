@@ -71,6 +71,10 @@
                                 <button class="btn btn-danger" type="submit">Delete</button>
                             </form>
                         </li>
+                        <li class="list-group-item text-center" sec:authorize="hasRole('DOCTOR')">
+                            <h5>Actions</h5>
+                            <a class="btn btn-info" th:href="@{/doctor/edit-patient-details/{id}(id=*{userId})}">Edit personal information</a>
+                        </li>
                     </ul>
                 </div>
             </div>

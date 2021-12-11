@@ -43,4 +43,6 @@ public interface UserService {
     void lockAccountToogle(Long userId);
 
     void anonymizeAllMarkedForDeleteUsers();
+
+    boolean canViewPhysicalExaminationDetails(Long physicalExaminationId);
 }

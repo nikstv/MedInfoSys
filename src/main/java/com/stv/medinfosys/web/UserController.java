@@ -116,8 +116,8 @@ public class UserController {
         return "session-expired";
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/physical-examination/info/{id}")
+    @PreAuthorize("@userServiceImpl.canViewPhysicalExaminationDetails(#physicalExaminationID)")
     public String physicalExaminationInfo(@PathVariable("id") Long physicalExaminationID, Model model) {
 
         PhysicalExaminationServiceModel physicalExamination = this.physicalExaminationService.findPhysicalExaminationById(physicalExaminationID);
