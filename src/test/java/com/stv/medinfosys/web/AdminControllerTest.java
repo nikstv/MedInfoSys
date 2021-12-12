@@ -1,13 +1,9 @@
 package com.stv.medinfosys.web;
 
 import com.stv.medinfosys.model.binding.UserEditBindingModel;
-import com.stv.medinfosys.model.entity.BaseEntity;
-import com.stv.medinfosys.model.entity.CountryEntity;
-import com.stv.medinfosys.model.entity.UserEntity;
-import com.stv.medinfosys.repository.CountryRepository;
-import com.stv.medinfosys.repository.DoctorRepository;
-import com.stv.medinfosys.repository.PatientRepository;
-import com.stv.medinfosys.repository.UserRepository;
+import com.stv.medinfosys.model.entity.*;
+import com.stv.medinfosys.model.enums.UserRoleEnum;
+import com.stv.medinfosys.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,15 +39,21 @@ class AdminControllerTest {
     @Autowired
     CountryRepository countryRepository;
 
+    @Autowired
+    UserRoleRepository userRoleRepository;
+
+    @Autowired
+    MedicalSpecialtyRepository medicalSpecialtyRepository;
+
     CountryEntity country = null;
+    UserEntity userEntityWithDoctorRole = null;
+    DoctorEntity doctorEntity = null;
 
     @BeforeEach
     void init() {
         this.country = this.countryRepository.save(new CountryEntity().setName("testName").setNativeName("testNativeName"));
 
-        UserEntity userEntity = new UserEntity();
-        userEntity
-                .setUsername("testUser")
+        UserEntity testUserEntity = this.userRepository.save(new UserEntity().setUsername("testUser")
                 .setPassword("1234")
                 .setFirstName("Nikolay")
                 .setMiddleName("Nikolaev")
@@ -64,14 +67,34 @@ class AdminControllerTest {
                 .setRoles(List.of())
                 .setTelNumber("0284569698")
                 .setEnabled(true)
-                .setAccountNonLocked(true);
-        UserEntity save = this.userRepository.save(userEntity);
+                .setAccountNonLocked(true));
+
+        UserRoleEntity doctorRole = this.userRoleRepository.findByRole(UserRoleEnum.DOCTOR).get();
+
+        this.userEntityWithDoctorRole = this.userRepository.save(new UserEntity().setUsername("test-Doctor")
+                .setPassword("1234")
+                .setFirstName("Nikolay")
+                .setMiddleName("Nikolaev")
+                .setLastName("Nikolov")
+                .setCity("Plovdiv")
+                .setStreet("St. Peterburg blvd.")
+                .setPersonalCitizenNumber("test_8565234563")
+                .setIdentityDocNumber("45638889")
+                .setCountry(country)
+                .setNumber("133")
+                .setRoles(List.of(doctorRole))
+                .setTelNumber("0284569698")
+                .setEnabled(true)
+                .setAccountNonLocked(true));
+
+        this.doctorEntity = this.doctorRepository.save(new DoctorEntity().setDoctorProfile(userEntityWithDoctorRole).setSpecialties(this.medicalSpecialtyRepository.findAll()));
     }
 
     @AfterEach
     void clean() {
-        this.doctorRepository.deleteAll();
         this.patientRepository.deleteAll();
+        this.doctorRepository.deleteAll();
+        this.medicalSpecialtyRepository.deleteAll();
         this.userRepository.deleteAll();
         this.countryRepository.deleteAll();
     }
@@ -273,5 +296,27 @@ class AdminControllerTest {
         UserEntity afterChange = this.userRepository.findByUsername("testUser").get();
         assertEquals(afterChange.getUsername(), userEntity.getUsername());
         assertNotEquals(afterChange.getPassword(), userEntity.getPassword());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    public void testEditDoctorSpecialtiesPage() throws Exception {
+        mockMvc
+                .perform(get("/admin/edit-doctor-specialties/" + this.userEntityWithDoctorRole.getId()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("allSpecialties", "specialtiesView"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @Transactional
+    public void testEditDoctorSpecialtiesPost() throws Exception {
+        MedicalSpecialtyEntity medicalSpecialtyEntity = this.medicalSpecialtyRepository.save(new MedicalSpecialtyEntity().setSpecialtyName("testSpecialty"));
+
+        mockMvc.perform(patch("/admin/edit-doctor-specialties/" + this.userEntityWithDoctorRole.getId())
+                        .param("specialties", medicalSpecialtyEntity.getId().toString()).with(csrf()))
+                .andExpect(status().is3xxRedirection());
+
+        assertTrue(this.doctorEntity.getSpecialties().contains(medicalSpecialtyEntity));
     }
 }

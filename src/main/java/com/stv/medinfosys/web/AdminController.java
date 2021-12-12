@@ -185,13 +185,13 @@ public class AdminController {
     }
 
     @PatchMapping("/admin/edit-doctor-specialties/{id}")
-    public String editDoctorMedicalSpecialtiesConfirm(@PathVariable("id") Long userId, @RequestParam(name = "roles", required = false) List<Long> rolesIds) {
-        if (rolesIds == null) {
-            rolesIds = new ArrayList<>();
+    public String editDoctorMedicalSpecialtiesConfirm(@PathVariable("id") Long userId, @RequestParam(name = "specialties", required = false) List<Long> specialtiesIds) {
+        if (specialtiesIds == null) {
+            specialtiesIds = new ArrayList<>();
         }
 
         Long doctorId = this.doctorService.findDoctorProfileByUserId(userId).getId();
-        this.doctorService.patchDoctorMedicalSpecialties(doctorId, rolesIds);
+        this.doctorService.patchDoctorMedicalSpecialties(doctorId, specialtiesIds);
         return "redirect:/user/" + userId + "/details";
     }
 }
