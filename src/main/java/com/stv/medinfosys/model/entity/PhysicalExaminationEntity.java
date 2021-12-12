@@ -19,7 +19,7 @@ public class PhysicalExaminationEntity extends BaseEntity{
     public PhysicalExaminationEntity() {
     }
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     public DoctorEntity getDoctor() {
         return doctor;
     }
@@ -29,7 +29,7 @@ public class PhysicalExaminationEntity extends BaseEntity{
         return this;
     }
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     public PatientEntity getPatient() {
         return patient;
     }
