@@ -23,8 +23,9 @@
             <p class="card-text" th:text="'Initial password: ' + ${initialPassword}">InitialPassword</p>
         </div>
     </div>
-
     <div class="personal-card-large">
+        <h1 class="text-center">User details</h1>
+
         <div class="row">
             <div class="col-lg-4">
                 <div class="card personal-id-info-photo">
@@ -90,6 +91,14 @@
                 <input name="id" type="hidden" class="form-control" th:value="*{userId}"/>
                 <button class="btn btn-primary" type="submit">Request new credentials</button>
             </form>
+        </div>
+    </div>
+    <div class="card personal-card-large" th:if="${canChangeLoginCredentials}">
+        <div class="card-body">
+            <h5 class="card-title">Change login credentials</h5>
+            <p class="card-text">To change your initial username or password, please click the button below. Please
+                keep in mind, that the current login details will be automatically revoked! You should log in again with your new login details.</p>
+                <a class="btn btn-primary" type="submit" th:href="@{/user/change-login-credentials/{id}(id=${id})}">Change credentials</a>
         </div>
     </div>
     <div class="card personal-card-large" th:if="${physicalExaminations}">

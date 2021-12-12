@@ -1,5 +1,6 @@
 package com.stv.medinfosys.service.impl;
 
+import com.stv.medinfosys.exception.ObjectAlreadyExistsException;
 import com.stv.medinfosys.exception.ObjectNotFoundException;
 import com.stv.medinfosys.model.entity.CloudinaryPictureEntity;
 import com.stv.medinfosys.model.entity.CountryEntity;
@@ -186,8 +187,41 @@ public class UserServiceImpl implements UserService {
         String newPassword = UUID.randomUUID().toString();
         userEntity
                 .setPassword(passwordEncoder.encode(newPassword));
-        UserEntity save = this.userRepository.save(userEntity);
+        this.userRepository.save(userEntity);
         return newPassword;
+    }
+
+    @Override
+    public void changeLoginCredentialsByUser(String newUsername, String newPassword, Long userId) {
+        Optional<UserEntity> byId = this.userRepository.findById(userId);
+        if (byId.isEmpty()) {
+            throw new ObjectNotFoundException("User with id " + userId + " not found.");
+        }
+
+        UserEntity userEntity = byId.get();
+        boolean usernameChanged = false;
+        boolean passwordChanged = false;
+        String oldUsername = userEntity.getUsername();
+
+        if (newUsername != null && !newUsername.equals("")) {
+            Optional<UserEntity> byUsername = this.userRepository.findByUsername(newUsername);
+            if (byUsername.isPresent()) {
+                throw new ObjectAlreadyExistsException("User with username " + newUsername + " already exists. Please choose another username.");
+            }
+
+            userEntity.setUsername(newUsername);
+            usernameChanged = true;
+        }
+
+        if (newPassword != null && !newPassword.equals("")) {
+            userEntity.setPassword(passwordEncoder.encode(newPassword));
+            passwordChanged = true;
+        }
+
+        UserEntity save = this.userRepository.save(userEntity);
+        if (usernameChanged || passwordChanged) {
+            this.expireSessionNow(oldUsername);
+        }
     }
 
     @Override
@@ -357,6 +391,21 @@ public class UserServiceImpl implements UserService {
 
         boolean principalIsPatient = principal.getUsername().equals(patientUsername);
         if (principalIsPatient) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean canChangeLoginCredentials(Long id) {
+        Optional<UserEntity> byId = this.userRepository.findById(id);
+        if (byId.isEmpty()) {
+            throw new ObjectNotFoundException("User with id " + id + " was not found");
+        }
+
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal.getUsername().equals(byId.get().getUsername())){
             return true;
         }
 

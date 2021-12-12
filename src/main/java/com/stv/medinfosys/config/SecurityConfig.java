@@ -32,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/admin/**").hasRole(UserRoleEnum.ADMIN.name())
                 .antMatchers("/doctor/**").hasRole(UserRoleEnum.DOCTOR.name())
                 .antMatchers("/", "/user/login", "/img/**", "/js/**", "/css/**").permitAll()
+                .antMatchers("/session-expired").permitAll()
                 .antMatchers("/**").authenticated()
                 .and()
                 .formLogin().loginPage("/user/login").usernameParameter("username").passwordParameter("password")

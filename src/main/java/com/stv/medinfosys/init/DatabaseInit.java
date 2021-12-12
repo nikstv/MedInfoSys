@@ -100,7 +100,13 @@ public class DatabaseInit implements CommandLineRunner {
                 .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.ADMIN)))
                 .setTelNumber("0284569698")
                 .setEnabled(true)
-                .setAccountNonLocked(true);
+                .setAccountNonLocked(true)
+                .setAdditionalInfo("")
+                .setDistrict("")
+                .setMunicipality("")
+                .setAnonymous(false)
+                .setState("");
+
 
         this.userService.saveToDb(admin);
 
@@ -120,7 +126,12 @@ public class DatabaseInit implements CommandLineRunner {
                 .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.DOCTOR)))
                 .setTelNumber("0326541452")
                 .setEnabled(true)
-                .setAccountNonLocked(true);
+                .setAccountNonLocked(true)
+                .setAdditionalInfo("")
+                .setDistrict("")
+                .setMunicipality("")
+                .setAnonymous(false)
+                .setState("");
 
         this.userService.saveToDb(doctor);
 
@@ -140,7 +151,12 @@ public class DatabaseInit implements CommandLineRunner {
                 .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.PATIENT)))
                 .setTelNumber("0326541452")
                 .setEnabled(true)
-                .setAccountNonLocked(true);
+                .setAccountNonLocked(true)
+                .setAdditionalInfo("")
+                .setDistrict("")
+                .setMunicipality("")
+                .setAnonymous(false)
+                .setState("");
         this.userService.saveToDb(firstPatient);
 
         UserServiceModel secondPatient = new UserServiceModel();
@@ -159,7 +175,12 @@ public class DatabaseInit implements CommandLineRunner {
                 .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.PATIENT)))
                 .setTelNumber("0326541452")
                 .setEnabled(true)
-                .setAccountNonLocked(true);
+                .setAccountNonLocked(true)
+                .setAdditionalInfo("")
+                .setDistrict("")
+                .setMunicipality("")
+                .setAnonymous(false)
+                .setState("");
         this.userService.saveToDb(secondPatient);
 
         UserServiceModel thirdPatient = new UserServiceModel();
@@ -178,7 +199,12 @@ public class DatabaseInit implements CommandLineRunner {
                 .setRoles(List.of(this.userRoleService.findRoleByEnum(UserRoleEnum.PATIENT)))
                 .setTelNumber("0326541452")
                 .setEnabled(true)
-                .setAccountNonLocked(true);
+                .setAccountNonLocked(true)
+                .setAdditionalInfo("")
+                .setDistrict("")
+                .setMunicipality("")
+                .setAnonymous(false)
+                .setState("");
         this.userService.saveToDb(thirdPatient);
 
     }

@@ -24,6 +24,8 @@ public interface UserService {
 
     String generateNewUserPassword(Long id);
 
+    void changeLoginCredentialsByUser(String newUsername, String newPassword, Long userId);
+
     UserServiceModel findUserByPersonalCitizenNumber(String personalCitizenNumber);
 
     boolean canViewUserDetails(Long userId);
@@ -45,4 +47,6 @@ public interface UserService {
     void anonymizeAllMarkedForDeleteUsers();
 
     boolean canViewPhysicalExaminationDetails(Long physicalExaminationId);
+
+    boolean canChangeLoginCredentials(Long id);
 }

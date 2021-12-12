@@ -133,6 +133,17 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(username = "testPatient", roles = {"PATIENT"})
+    public void testPhysicalExaminationInfoPageByPatient() throws Exception {
+        Long physicalExaminationEntityId = this.physicalExaminationEntity.getId();
+        mockMvc
+                .perform(get("/user/physical-examination/info/" + physicalExaminationEntityId))
+                .andExpect(view().name("physical-examination-info"))
+                .andExpect(model().attributeExists("patient", "doctor", "medicalSpecialties", "physicalExamination"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "testPatient", roles = {"PATIENT"})
     public void testUserDetailsPageViewByPatient() throws Exception {
         UserEntity patientUserEntity = this.userRepository.findByUsername("testPatient").get();
         mockMvc

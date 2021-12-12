@@ -53,7 +53,8 @@ class AdminControllerTest {
     void init() {
         this.country = this.countryRepository.save(new CountryEntity().setName("testName").setNativeName("testNativeName"));
 
-        UserEntity testUserEntity = this.userRepository.save(new UserEntity().setUsername("testUser")
+        UserEntity testUserEntity = this.userRepository.save(new UserEntity()
+                .setUsername("testUser")
                 .setPassword("1234")
                 .setFirstName("Nikolay")
                 .setMiddleName("Nikolaev")
@@ -71,7 +72,8 @@ class AdminControllerTest {
 
         UserRoleEntity doctorRole = this.userRoleRepository.findByRole(UserRoleEnum.DOCTOR).get();
 
-        this.userEntityWithDoctorRole = this.userRepository.save(new UserEntity().setUsername("test-Doctor")
+        this.userEntityWithDoctorRole = this.userRepository.save(new UserEntity()
+                .setUsername("test-Doctor")
                 .setPassword("1234")
                 .setFirstName("Nikolay")
                 .setMiddleName("Nikolaev")
