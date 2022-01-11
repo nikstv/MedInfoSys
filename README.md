@@ -1,5 +1,5 @@
-#MedInfoSys
-##Brief description
+# MedInfoSys
+## Brief description
 MedInfoSys is a data management system that facilitates processing of patient information.
 It supports three types of user accounts: ADMIN, DOCTOR, PATIENT. A user account can be granted more than one role.
 All input forms have data validation on the client and the server side to prevent crashes caused by invalid data.
@@ -17,7 +17,7 @@ Doctor have access to the medical information of the patients.
 
 The PATIENT has access to his personal profile page. It contains the personal details of the patient and the history of all physical examinations. The patient can change his login credentials.
 
-##Packages info
+## Packages info
 #### config - contains configuration classes:
 * Spring security configuration;
 * Custom beans - ModelMapper, PasswordEncoder (required by Spring security), Cloudinary, SessionRegistry.
